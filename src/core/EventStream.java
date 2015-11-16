@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
+import util.Mutable;
 
 public class EventStream extends Destructible {
 
@@ -42,7 +43,7 @@ public class EventStream extends Destructible {
     //Interesting functions
     public Signal<Integer> bufferCount(EventStream e) {
         Signal<Integer> count = count();
-        return toSignal(count).forEach(i -> count.set(0));
+        return e.toSignal(count).forEach(i -> count.set(0));
     }
 
     public Signal<Integer> bufferCountThrottle(double interval) {
@@ -61,6 +62,10 @@ public class EventStream extends Destructible {
         return reduce(0, i -> i + 1);
     }
 
+    public Signal<Integer> countWithin(double interval) {
+        return throttle(interval).with(count(), s -> s.set(0));
+    }
+
     public EventStream onEvent(Runnable r) {
         return with(new EventStream(), s -> {
             r.run();
@@ -73,8 +78,17 @@ public class EventStream extends Destructible {
     }
 
     public EventStream throttle(double interval) {
-        Signal<Double> time = with(Core.time(), t -> t.set(0.));
-        return time.filter(t -> t > interval).forEach(t -> time.set(t - interval));
+        Mutable<Signal<Double>> timer = new Mutable(null);
+        return with(new EventStream(), r -> {
+            if (timer.o == null) {
+                timer.o = Core.timer(interval, () -> {
+                    r.sendEvent();
+                    timer.o = null;
+                });
+            } else {
+                timer.o.set(0.);
+            }
+        });
     }
 
     public EventStream toEventStream() {

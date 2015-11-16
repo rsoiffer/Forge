@@ -125,6 +125,10 @@ public class Signal<T> extends EventStream implements Supplier<T> {
         return forEach(System.out::println);
     }
 
+    public Signal<T> printStackTraceEach() {
+        return forEach(t -> new RuntimeException().printStackTrace());
+    }
+
     public <R> Signal<R> reduce(R r, BiFunction<T, R, R> f) {
         return with(new Signal<>(r), s -> s.edit(v -> f.apply(get(), v)));
     }

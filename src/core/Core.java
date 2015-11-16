@@ -53,7 +53,9 @@ public abstract class Core {
         return update.reduce(0., (dt, t) -> t + dt);
     }
 
-    public static void timer(double delay, Runnable r) {
-        time().filter(t -> t > delay).first(1).onEvent(r);
+    public static Signal<Double> timer(double delay, Runnable r) {
+        Signal<Double> time = time();
+        time.filter(t -> t > delay).first(1).onEvent(r);
+        return time;
     }
 }
