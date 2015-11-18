@@ -1,10 +1,9 @@
 package util;
 
-import graphics.Window;
-import util.Vec2;
 import core.Core;
 import core.EventStream;
 import core.Signal;
+import graphics.Window;
 import java.util.HashMap;
 import java.util.Map;
 import org.lwjgl.input.Keyboard;
@@ -18,9 +17,9 @@ public class Input {
 
     public static final Signal<Integer> mouseWheel = new Signal<>(0);
 
-    private static Vec2 mouse;
-    private static Vec2 mouseDelta;
-    private static Vec2 mouseScreen;
+    private static Vec2 mouse = new Vec2();
+    private static Vec2 mouseDelta = new Vec2();
+    private static Vec2 mouseScreen = new Vec2();
 
     static {
         Core.update.onEvent(() -> {

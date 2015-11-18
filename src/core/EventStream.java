@@ -66,6 +66,21 @@ public class EventStream extends Destructible {
         return throttle(interval).with(count(), s -> s.set(0));
     }
 
+    public EventStream filter_E(Signal<Boolean> p) {
+        return filterElse_E(p, s -> {
+        });
+    }
+
+    public EventStream filterElse_E(Signal<Boolean> p, Consumer<EventStream> c) {
+        return with(new EventStream(), s -> {
+            if (p.get()) {
+                s.sendEvent();
+            } else {
+                c.accept(s);
+            }
+        });
+    }
+
     public EventStream onEvent(Runnable r) {
         return with(new EventStream(), s -> {
             r.run();

@@ -71,7 +71,7 @@ public class Signal<T> extends EventStream implements Supplier<T> {
 
     public <R> Signal<R> flatMap(Function<T, Signal<R>> f) {
         Signal<R> ret = f.apply(get());
-        map(f).forEach(s -> s.forEach(r -> ret.set(r)));
+        map(f).forEach(s -> s.forEach(ret::set).addChild(ret)).addChild(ret);
         return ret;
     }
 

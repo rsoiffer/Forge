@@ -22,6 +22,22 @@ public class Vec2 {
         return new Vec2(x + other.x, y + other.y);
     }
 
+    public Vec2 clamp(Vec2 LL, Vec2 UR) {
+        double nx = x;
+        double ny = y;
+        if (nx < LL.x) {
+            nx = LL.x;
+        } else if (nx > UR.x) {
+            nx = UR.x;
+        }
+        if (ny < LL.y) {
+            ny = LL.y;
+        } else if (ny > UR.y) {
+            ny = UR.y;
+        }
+        return new Vec2(nx, ny);
+    }
+
     public boolean containedBy(Vec2 v1, Vec2 v2) {
         int q1 = v1.quadrant(this);
         int q2 = v2.quadrant(this);

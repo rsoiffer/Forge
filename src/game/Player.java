@@ -25,7 +25,7 @@ public class Player extends AbstractEntity {
             b.velocity.set(Input.getMouse().subtract(position.get()).withLength(1000));
         }).addChild(this);
 
-        Input.whenMouse(0, true).countWithin(1).printEach().map(i -> i == 0).forEach(b -> s.color = b ? GREEN : RED).addChild(this);
-        Input.whenMouse(1, true).bufferCountThrottle(.2).filter(i -> i >= 2).forEach(i -> s.color = BLUE).addChild(this);
+        Input.whenMouse(0, true).countWithin(1).map(i -> i == 0).forEach(b -> s.color = b ? GREEN : RED).addChild(this);
+        Input.whenMouse(1, true).bufferCountThrottle(.2).filter(i -> i >= 2).onEvent(() -> s.color = BLUE).addChild(this);
     }
 }

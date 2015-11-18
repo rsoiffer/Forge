@@ -39,6 +39,6 @@ public abstract class Premade {
 
     public static void makeSpriteGraphics(AbstractEntity e, Sprite s) {
         Signal<Vec2> position = e.get("position", Vec2.class);
-        e.onUpdate(dt -> Graphics2D.drawSprite(s.getTexture(), position.get(), s.scale, 0, s.color));
+        e.onUpdate(dt -> s.draw(position.get(), 0));
     }
 }
