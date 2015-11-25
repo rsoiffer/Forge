@@ -17,6 +17,7 @@ public class Player extends AbstractEntity {
         Sprite s = new Sprite("box");
         s.color = GREEN;
         Premade.makeSpriteGraphics(this, s);
+        onUpdate(dt -> s.imageIndex += s.imageSpeed*dt);
 
         Input.whenMouse(0, true).onEvent(() -> {
             Bullet b = new Bullet();

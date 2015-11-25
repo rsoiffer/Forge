@@ -20,12 +20,12 @@ public abstract class Window {
         viewSize = new Vec2(width, height);
         viewPos = new Vec2();
         boolean startFullscreen = false;
-        background = Color4.WHITE;
+        background = Color4.BLACK;
 
         try {
             //Display Init
             Camera.setDisplayMode(viewSize, startFullscreen);
-            Display.setVSyncEnabled(true);
+            //Display.setVSyncEnabled(true);
             Display.setResizable(true);
             Display.setTitle(title);
             Display.create();
