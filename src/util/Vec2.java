@@ -5,12 +5,13 @@ import static org.lwjgl.opengl.GL11.glVertex2d;
 
 public class Vec2 {
 
+    public static final Vec2 ZERO = new Vec2(0);
+
     public final double x;
     public final double y;
 
-    public Vec2() {
-        x = 0;
-        y = 0;
+    public Vec2(double a) {
+        this(a, a);
     }
 
     public Vec2(double x, double y) {
@@ -73,6 +74,10 @@ public class Vec2 {
         return false;
     }
 
+    public static Vec2 fromPolar(double r, double t) {
+        return new Vec2(r * Math.cos(t), r * Math.sin(t));
+    }
+
     public void glTexCoord() {
         glTexCoord2d(x, y);
     }
@@ -129,7 +134,15 @@ public class Vec2 {
         }
     }
 
-    public static Vec2 random(double r) {
+    public static Vec2 randomCircle(double r) {
+        return randomShell(r * Math.random());
+    }
+
+    public static Vec2 randomShell(double r) {
+        return fromPolar(r, 2 * Math.PI * Math.random());
+    }
+
+    public static Vec2 randomSquare(double r) {
         return new Vec2(Math.random() * 2 * r - r, Math.random() * 2 * r - r);
     }
 
@@ -137,9 +150,13 @@ public class Vec2 {
         return new Vec2(-x, -y);
     }
 
+    public Vec2 rotate(double t) {
+        return new Vec2(x * Math.cos(t) - y * Math.sin(t), x * Math.sin(t) + y * Math.cos(t));
+    }
+
     public Vec2 withLength(double l) {
         if (l == 0.0) {
-            return new Vec2();
+            return ZERO;
         }
         return multiply(l / length());
     }

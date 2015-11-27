@@ -15,6 +15,12 @@ public abstract class Util {
         forRange(start1, end1, i1 -> forRange(start2, end2, i2 -> c.accept(i1, i2)));
     }
 
+    public static void repeat(int num, Consumer<Integer> c) {
+        for (int i = 0; i < num; i++) {
+            c.accept(i);
+        }
+    }
+
     public static void repeat(int num, Runnable r) {
         for (int i = 0; i < num; i++) {
             r.run();

@@ -4,16 +4,17 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public abstract class AbstractEntity extends Destructible {
 
-    private final Map<String, Signal> components = new HashMap();
+    private final Map<String, Destructible> components = new HashMap();
 
     public void add(Destructible... a) {
         Arrays.asList(a).forEach(d -> d.addChild(this));
     }
 
-    public <R> Signal<R> addChild(Signal<R> child, String name) {
+    public <R extends Destructible> R addChild(R child, String name) {
         addChild(child);
         components.put(name, child);
         return child;
@@ -31,6 +32,18 @@ public abstract class AbstractEntity extends Destructible {
             throw new RuntimeException("Missing component " + name);
         }
         return (Signal) r;
+    }
+
+    public <S extends Supplier> S getOrDefault(String name, S s) {
+        Destructible r = components.get(name);
+        if (r == null) {
+            return s;
+        }
+        return (S) r;
+    }
+
+    public void onRender(Runnable r) {
+        Core.render.onEvent(r).addChild(this);
     }
 
     public void onUpdate(Consumer<Double> c) {

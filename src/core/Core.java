@@ -3,13 +3,21 @@ package core;
 import graphics.Window;
 import graphics.loading.FontContainer;
 import java.io.File;
+import java.util.Map;
+import java.util.TreeMap;
 import org.lwjgl.opengl.Display;
+import util.Mutable;
 
 public abstract class Core {
 
-    public static final Signal<Double> update = new Signal(0.);
+    private static final Map<Double, Signal<Double>> updateLayers = new TreeMap();
+    public static final Signal<Double> update = updateLayer(0);
+    private static final Map<Double, EventStream> renderLayers = new TreeMap();
+    public static final EventStream render = renderLayer(0);
     public static int speed = 60;
     public static double timeMult = 1;
+    public static double timeCap = .1;
+    public static double timeMin = .001;
 
     public static void init() {
         System.setProperty("org.lwjgl.librarypath", new File("natives").getAbsolutePath());
@@ -17,19 +25,53 @@ public abstract class Core {
         FontContainer.init();
     }
 
+    public static EventStream renderLayer(double d) {
+        EventStream current = renderLayers.get(d);
+        if (current == null) {
+            current = new EventStream();
+            renderLayers.put(d, current);
+        }
+        return current;
+    }
+
     public static void run() {
         long lastStep = System.nanoTime();
+        Mutable<Boolean> updateScreen = new Mutable(true);
         while (!Display.isCloseRequested()) {
             //Timing
-            long now = System.nanoTime();
-            double deltaTime = (now - lastStep) * 0.000000001 * timeMult;
+            long now;
+            double deltaTime;
+            do {
+                now = System.nanoTime();
+                deltaTime = (now - lastStep) * 0.000000001 * timeMult;
+                if (timeCap < deltaTime) {
+                    deltaTime = timeCap;
+                }
+            } while (deltaTime < timeMin);
             lastStep = now;
             //Update
-            update.set(deltaTime);
+            double dt = deltaTime;
+            updateLayers.values().forEach(s -> s.set(dt));
             //Graphics
-            Display.update();
-            Display.sync(speed);
+            if (updateScreen.o) {
+                renderLayers.values().forEach(EventStream::sendEvent);
+                Display.update();
+                updateScreen.o = false;
+                new Thread(() -> {
+                    Display.sync(speed);
+                    updateScreen.o = true;
+                }).start();
+            }
         }
+    }
+
+    public static Signal<Double> updateLayer(double d) {
+        Signal<Double> current = updateLayers.get(d);
+        if (current == null) {
+            current = new Signal(0);
+            updateLayers.put(d, current);
+        }
+        return current;
     }
 
     //Time utility functions

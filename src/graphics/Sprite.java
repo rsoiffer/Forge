@@ -1,9 +1,9 @@
 package graphics;
 
 import graphics.loading.SpriteContainer;
+import java.util.ArrayList;
 import util.Color4;
 import util.Vec2;
-import java.util.ArrayList;
 
 public class Sprite {
 
@@ -24,7 +24,7 @@ public class Sprite {
         imageIndex = 0;
         imageSpeed = 0;
         visible = true;
-        scale = new Vec2(1, 1);
+        scale = new Vec2(1);
         color = Color4.WHITE;
     }
 

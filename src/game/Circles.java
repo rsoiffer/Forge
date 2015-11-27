@@ -7,18 +7,12 @@ package game;
 
 import core.AbstractEntity;
 import core.Core;
+import core.Input;
 import core.Signal;
 import graphics.Graphics2D;
 import graphics.Window;
-import java.util.function.Consumer;
-import static org.lwjgl.opengl.GL11.GL_ONE;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import util.Color4;
-import util.Input;
-import util.Mutable;
-import util.Util;
-import util.Vec2;
+import static org.lwjgl.opengl.GL11.*;
+import util.*;
 
 /**
  *
@@ -35,11 +29,11 @@ public class Circles {
             Signal<Vec2> position = Premade.makePosition(c);
             position.set(Input.getMouse());
             Signal<Vec2> velocity = Premade.makeVelocity(c);
-            velocity.set(Vec2.random(50).add(new Vec2(0, 150)));
+            velocity.set(Vec2.randomCircle(50).add(new Vec2(0, 150)));
 
             Mutable<Color4> color = new Mutable(new Color4(1, .2, .05, .1));
             c.onUpdate(dt -> color.o = color.o.withA(color.o.a - Math.random() * dt / 10));
-            c.onUpdate(dt -> Graphics2D.fillEllipse(position.get(), new Vec2(dt*1000, dt*1000), color.o, 20));
+            c.onRender(() -> Graphics2D.fillEllipse(position.get(), new Vec2(10, 10), color.o, 20));
 
             Core.update.filter(dt -> color.o.a < 0).onEvent(c::destroy);
 

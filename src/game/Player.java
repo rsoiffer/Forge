@@ -4,7 +4,7 @@ import core.AbstractEntity;
 import core.Signal;
 import graphics.Sprite;
 import static util.Color4.*;
-import util.Input;
+import core.Input;
 import util.Vec2;
 
 public class Player extends AbstractEntity {

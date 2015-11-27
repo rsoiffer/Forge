@@ -81,6 +81,10 @@ public class EventStream extends Destructible {
         });
     }
 
+    public EventStream first_E(int n) {
+        return filterElse_E(count().map(i -> i <= n), EventStream::destroy);
+    }
+
     public EventStream onEvent(Runnable r) {
         return with(new EventStream(), s -> {
             r.run();

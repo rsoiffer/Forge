@@ -1,4 +1,4 @@
-package util;
+package core;
 
 import core.Core;
 import core.EventStream;
@@ -9,6 +9,8 @@ import java.util.Map;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
+import util.Vec2;
+import static util.Vec2.ZERO;
 
 public class Input {
 
@@ -17,9 +19,9 @@ public class Input {
 
     public static final Signal<Integer> mouseWheel = new Signal<>(0);
 
-    private static Vec2 mouse = new Vec2();
-    private static Vec2 mouseDelta = new Vec2();
-    private static Vec2 mouseScreen = new Vec2();
+    private static Vec2 mouse = ZERO;
+    private static Vec2 mouseDelta = ZERO;
+    private static Vec2 mouseScreen = ZERO;
 
     static {
         Core.update.onEvent(() -> {

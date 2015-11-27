@@ -1,14 +1,15 @@
 package graphics;
 
-import util.Input;
-import util.Color4;
-import util.Vec2;
 import core.Core;
+import core.Input;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
+import util.Color4;
+import util.Vec2;
+import static util.Vec2.ZERO;
 
 public abstract class Window {
 
@@ -18,9 +19,10 @@ public abstract class Window {
 
     public static void initialize(int width, int height, String title) {
         viewSize = new Vec2(width, height);
-        viewPos = new Vec2();
+        viewPos = ZERO;
         boolean startFullscreen = false;
-        background = Color4.BLACK;
+        //background = new Color4(.1, .2, .3);
+        background = new Color4(.2, .6, 1);
 
         try {
             //Display Init
@@ -69,11 +71,19 @@ public abstract class Window {
         return viewPos.subtract(viewSize.multiply(.5));
     }
 
+    public static Vec2 LR() {
+        return viewPos.add(viewSize.multiply(new Vec2(.5, -.5)));
+    }
+
     public static boolean nearInView(Vec2 pos, Vec2 buffer) {
         return pos.containedBy(LL().subtract(buffer), UR().add(buffer));
     }
 
     public static Vec2 UR() {
         return viewPos.add(viewSize.multiply(.5));
+    }
+
+    public static Vec2 UL() {
+        return viewPos.add(viewSize.multiply(new Vec2(-.5, .5)));
     }
 }
