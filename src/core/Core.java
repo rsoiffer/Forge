@@ -44,10 +44,10 @@ public abstract class Core {
             do {
                 now = System.nanoTime();
                 deltaTime = (now - lastStep) * 0.000000001 * timeMult;
-                if (timeCap < deltaTime) {
-                    deltaTime = timeCap;
-                }
             } while (deltaTime < timeMin);
+            if (timeCap < deltaTime) {
+                deltaTime = timeCap;
+            }
             lastStep = now;
             //Update
             double dt = deltaTime;
@@ -55,10 +55,10 @@ public abstract class Core {
             //Graphics
             if (updateScreen.o) {
                 renderLayers.values().forEach(EventStream::sendEvent);
-                Display.update();
                 updateScreen.o = false;
+                Display.update();
                 new Thread(() -> {
-                    Display.sync(speed);
+                    //Display.sync(speed);
                     updateScreen.o = true;
                 }).start();
             }

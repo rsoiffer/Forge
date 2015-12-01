@@ -156,7 +156,7 @@ public class TextureLoader {
         int srcPixelFormat;
 
         ArrayList<BufferedImage> images = loadImage(resourceName, x, y);
-        ArrayList<Texture> textures = new ArrayList<Texture>();
+        ArrayList<Texture> textures = new ArrayList();
         for (int i = 0; i < x * y; i++) {
             // create the texture ID for this texture
             int textureID = createTextureID();

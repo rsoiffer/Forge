@@ -1,9 +1,6 @@
 package particles.drawers;
 
-import graphics.Graphics2D;
-import graphics.Shader;
-import graphics.Texture;
-import graphics.Window;
+import graphics.*;
 import graphics.loading.SpriteContainer;
 import static org.lwjgl.opengl.EXTFramebufferObject.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -19,7 +16,7 @@ import util.Vec2;
 public class MetaballDrawer implements Drawer {
 
     private static final Shader metaball = new Shader("screen");
-    private static final Texture texture = SpriteContainer.loadSprite("metaball");
+    private static final Texture texture = SpriteContainer.loadSprite("metaball2");
 
     private final int framebufferID, colorTextureID, depthRenderBufferID;
 
@@ -32,8 +29,9 @@ public class MetaballDrawer implements Drawer {
         this.size = size;
         this.additional = additional;
 
-        int width = 1200;
-        int height = 800;
+        //int width = 1200;
+        //int height = 800;
+        int width = 2048, height = 2048;
 
         framebufferID = glGenFramebuffersEXT();                                         // create a new framebuffer
         colorTextureID = glGenTextures();                                               // and a new texture used as a color buffer
@@ -58,11 +56,13 @@ public class MetaballDrawer implements Drawer {
     @Override
     public void begin() {
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebufferID);
-        glClearColor(0, 0, 0, 0);
+        glViewport(0, 0, 2048, 2048);
+
+        glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         WHITE.glColor();
 
-        glBlendFunc(GL_ONE, GL_ONE);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         glEnable(GL_TEXTURE_2D);
         texture.bind();
         glBegin(GL_QUADS);
@@ -78,14 +78,13 @@ public class MetaballDrawer implements Drawer {
     @Override
     public void end() {
         glEnd();
-
         additional.run();
 
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        Camera.calculateViewport(Window.viewSize);
 
         metaball.enable();
-
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, colorTextureID);
         color.glColor();
@@ -100,7 +99,6 @@ public class MetaballDrawer implements Drawer {
         glTexCoord2d(1, 0);
         Window.LR().glVertex();
         glEnd();
-
         Shader.clear();
     }
 }
