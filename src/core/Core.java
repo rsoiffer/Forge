@@ -68,7 +68,7 @@ public abstract class Core {
     public static Signal<Double> updateLayer(double d) {
         Signal<Double> current = updateLayers.get(d);
         if (current == null) {
-            current = new Signal(0);
+            current = new Signal(0.);
             updateLayers.put(d, current);
         }
         return current;

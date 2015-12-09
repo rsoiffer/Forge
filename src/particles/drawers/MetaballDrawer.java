@@ -5,8 +5,6 @@ import graphics.loading.SpriteContainer;
 import static org.lwjgl.opengl.EXTFramebufferObject.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.GL_DEPTH_COMPONENT24;
-import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
-import static org.lwjgl.opengl.GL30.glBindFramebuffer;
 import particles.Particle;
 import particles.ParticleEmitter.Drawer;
 import util.Color4;
@@ -81,7 +79,7 @@ public class MetaballDrawer implements Drawer {
         additional.run();
 
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
         Camera.calculateViewport(Window.viewSize);
 
         metaball.enable();

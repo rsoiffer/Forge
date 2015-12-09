@@ -5,11 +5,16 @@ import core.Core;
 import core.Input;
 import core.Signal;
 import game.Premade;
-import game.Water;
+import particles.effects.Water;
 import graphics.Sprite;
 import graphics.Window;
 import org.lwjgl.opengl.Display;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLE_STRIP;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnd;
 import particles.drawers.MetaballDrawer;
 import particles.drawers.TraceDrawer;
 import util.Color4;
@@ -18,7 +23,7 @@ import util.Util;
 import util.Vec2;
 
 public class Particles {
-
+ 
     public static void main(String[] args) {
         Core.init();
 
@@ -83,8 +88,7 @@ public class Particles {
                 Core.update.filter(position.map(p -> p.y < w.bottom - 20)).first(1).onEvent(rock::destroy);
             }).create();
         });
-//        Input.whenMouse(1, true).onEvent(() -> new Sound1(Input.getMouse()).create());
-        //
+        //Input.whenMouse(1, true).onEvent(() -> new Sound1(Input.getMouse()).create());
 //        Input.whenMouse(1, true).onEvent(() -> new Explosion(Input.getMouse()).create());
 //
 //        Flames f = new Flames();

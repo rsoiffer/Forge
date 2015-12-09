@@ -8,6 +8,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
 import util.Color4;
+import static util.Color4.WHITE;
 import util.Vec2;
 import static util.Vec2.ZERO;
 
@@ -21,8 +22,8 @@ public abstract class Window {
         viewSize = new Vec2(width, height);
         viewPos = ZERO;
         boolean startFullscreen = false;
-        //background = new Color4(.1, .2, .3);
-        background = new Color4(.2, .6, 1);
+        
+        background = WHITE;
 
         try {
             //Display Init

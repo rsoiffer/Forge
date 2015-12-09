@@ -1,4 +1,4 @@
-package game;
+package particles.effects;
 
 import core.AbstractEntity;
 import core.Core;

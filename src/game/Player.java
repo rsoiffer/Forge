@@ -1,10 +1,12 @@
 package game;
 
 import core.AbstractEntity;
+import core.Input;
 import core.Signal;
 import graphics.Sprite;
-import static util.Color4.*;
-import core.Input;
+import static util.Color4.BLUE;
+import static util.Color4.GREEN;
+import static util.Color4.RED;
 import util.Vec2;
 
 public class Player extends AbstractEntity {
@@ -13,11 +15,10 @@ public class Player extends AbstractEntity {
     public void create() {
         Signal<Vec2> position = Premade.makePosition(this);
         Premade.makeVelocity(this);
-        Premade.makeWASDMovement(this, 300);
+        Premade.makeWASDMovement(this, 300, false);
         Sprite s = new Sprite("box");
         s.color = GREEN;
         Premade.makeSpriteGraphics(this, s);
-        onUpdate(dt -> s.imageIndex += s.imageSpeed*dt);
 
         Input.whenMouse(0, true).onEvent(() -> {
             Bullet b = new Bullet();
