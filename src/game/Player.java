@@ -1,15 +1,20 @@
 package game;
 
 import core.AbstractEntity;
+import core.Core;
 import core.Input;
 import core.Signal;
 import graphics.Sprite;
-import static util.Color4.BLUE;
-import static util.Color4.GREEN;
-import static util.Color4.RED;
+import static util.Color4.*;
 import util.Vec2;
 
 public class Player extends AbstractEntity {
+
+    public static void main(String[] args) {
+        Core.init();
+        new Player().create();
+        Core.run();
+    }
 
     @Override
     public void create() {

@@ -1,8 +1,5 @@
 package core;
 
-import core.Core;
-import core.EventStream;
-import core.Signal;
 import graphics.Window;
 import java.util.HashMap;
 import java.util.Map;

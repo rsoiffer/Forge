@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
-import util.Mutable;
 
 public class EventStream extends Destructible {
 
@@ -93,21 +92,11 @@ public class EventStream extends Destructible {
     }
 
     public <R> Signal<R> reduce(R r, UnaryOperator<R> f) {
-        return with(new Signal<>(r), s -> s.edit(f));
+        return with(new Signal(r), s -> s.edit(f));
     }
 
     public EventStream throttle(double interval) {
-        Mutable<Signal<Double>> timer = new Mutable(null);
-        return with(new EventStream(), r -> {
-            if (timer.o == null) {
-                timer.o = Core.timer(interval, () -> {
-                    r.sendEvent();
-                    timer.o = null;
-                });
-            } else {
-                timer.o.set(0.);
-            }
-        });
+        return with(Core.time(), t -> t.set(0.)).map(t -> t > interval).distinct().filter(b -> b);
     }
 
     public EventStream toEventStream() {

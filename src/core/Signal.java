@@ -23,10 +23,8 @@ public class Signal<T> extends EventStream implements Supplier<T> {
     }
 
     public void set(T value) {
-        //if (this.value != value) {
         this.value = value;
         sendEvent();
-        //}
     }
 
     public void set(T... values) {
@@ -67,6 +65,14 @@ public class Signal<T> extends EventStream implements Supplier<T> {
 
     public Signal<T> debounce(double interval) {
         return throttle(interval).toSignal(this);
+    }
+
+    public Signal<T> distinct() {
+        return with(new Signal(get()), s -> {
+            if (s.get() != get()) {
+                s.set(get());
+            }
+        });
     }
 
     public <R> Signal<R> flatMap(Function<T, Signal<R>> f) {

@@ -1,4 +1,4 @@
-package network;
+package lobster;
 
 public interface CommandHandler {
 
