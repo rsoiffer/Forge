@@ -4,22 +4,33 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
 import static network.Server.PORT;
+import util.Log;
 
 public class Client {
 
     public static void main(String[] args) {
-        Connection conn = connect("localhost");
+        Scanner in = new Scanner(System.in);
+        System.out.println("Enter your name:");
+        String name = in.nextLine();
+        System.out.println("Enter the ip adress to connect to:");
+
+        Connection conn = connect(in.nextLine());
         if (conn == null) {
             return;
         }
         System.out.println("Connected to server");
         conn.onClose(() -> System.out.println("Disconnected from server"));
 
-        conn.registerHandler(1, i -> System.out.println(i.readUTF()));
+        conn.registerHandler(0, () -> System.out.println(conn.read(String.class)));
 
-        Scanner in = new Scanner(System.in);
-        while (true) {
-            conn.sendMessage(1, in.nextLine());
+        try {
+            Thread.sleep(10); //Going too fast means the message handlers haven't registered
+        } catch (InterruptedException ex) {
+            Log.error(ex);
+        }
+        conn.sendMessage(1, name);
+        while (!conn.isClosed()) {
+            conn.sendMessage(0, in.nextLine());
         }
     }
 
