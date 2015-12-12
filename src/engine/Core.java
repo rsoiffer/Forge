@@ -1,4 +1,4 @@
-package core;
+package engine;
 
 import graphics.Window;
 import graphics.loading.FontContainer;
@@ -19,7 +19,10 @@ public abstract class Core {
     public static double timeCap = .1;
     public static double timeMin = .001;
 
+    public static boolean running;
+
     public static void init() {
+        running = true;
         System.setProperty("org.lwjgl.librarypath", new File("natives").getAbsolutePath());
         Window.initialize(1200, 800, "So how are you today?");
         FontContainer.init();

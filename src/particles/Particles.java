@@ -1,29 +1,23 @@
 package particles;
 
-import core.AbstractEntity.LAE;
-import core.Core;
-import core.Input;
-import core.Signal;
+import engine.AbstractEntity.LAE;
+import engine.Core;
+import engine.Input;
+import engine.Signal;
 import game.Premade;
-import particles.effects.Water;
-import graphics.Sprite;
 import graphics.Window;
 import org.lwjgl.opengl.Display;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_TRIANGLE_STRIP;
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.*;
 import particles.drawers.MetaballDrawer;
 import particles.drawers.TraceDrawer;
+import particles.effects.Water;
 import util.Color4;
 import util.Mutable;
 import util.Util;
 import util.Vec2;
 
 public class Particles {
- 
+
     public static void main(String[] args) {
         Core.init();
 
@@ -71,7 +65,7 @@ public class Particles {
                 position.set(Input.getMouse());
                 Signal<Vec2> velocity = Premade.makeVelocity(rock);
                 rock.onUpdate(dt -> velocity.edit(new Vec2(0, -1000 * dt)::add));
-                Premade.makeSpriteGraphics(rock, new Sprite("rock"));
+                Premade.makeSpriteGraphics(rock, "rock");
 
                 Mutable<Boolean> canSplash = new Mutable(true);
                 rock.onUpdate(dt -> {

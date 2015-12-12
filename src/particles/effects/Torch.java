@@ -1,8 +1,8 @@
 package particles.effects;
 
-import core.AbstractEntity;
-import core.Core;
-import core.Signal;
+import engine.AbstractEntity;
+import engine.Core;
+import engine.Signal;
 import static org.lwjgl.opengl.GL11.GL_ONE;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import particles.LifeTimeParticle;

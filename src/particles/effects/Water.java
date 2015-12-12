@@ -1,7 +1,7 @@
 package particles.effects;
 
-import core.AbstractEntity;
-import core.Core;
+import engine.AbstractEntity;
+import engine.Core;
 import java.util.Arrays;
 import static org.lwjgl.opengl.GL11.*;
 import particles.Particle;

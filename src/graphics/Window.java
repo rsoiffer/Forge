@@ -1,7 +1,7 @@
 package graphics;
 
-import core.Core;
-import core.Input;
+import engine.Core;
+import engine.Input;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;

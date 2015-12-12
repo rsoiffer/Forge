@@ -1,8 +1,8 @@
 package game;
 
-import core.AbstractEntity;
-import core.Core;
-import core.Signal;
+import engine.AbstractEntity;
+import engine.Core;
+import engine.Signal;
 import static util.Color4.BLUE;
 import util.Vec2;
 

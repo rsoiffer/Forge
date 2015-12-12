@@ -1,14 +1,10 @@
 package network;
 
-import java.io.IOException;
-import java.net.ServerSocket;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Consumer;
-import static network.Server.startServer;
 import util.Log;
 
-public class Server {
+public class ChatServer {
 
     private static class ClientInfo {
 
@@ -22,11 +18,9 @@ public class Server {
         }
     }
 
-    public static final int PORT = 51234;
-
     public static void main(String[] args) {
         List<ClientInfo> clients = new LinkedList();
-        startServer(conn -> {
+        NetworkUtils.server(conn -> {
             ClientInfo info = new ClientInfo(conn, clients.size());
             clients.add(info);
 
@@ -39,21 +33,6 @@ public class Server {
                 clients.stream().filter(c -> c.conn != conn).forEach(c -> c.conn.sendMessage(0, msg));
             });
             conn.registerHandler(1, () -> info.name = conn.read(String.class));
-        });
-    }
-
-    public static void startServer(Consumer<Connection> onConnect) {
-        new Thread(() -> {
-            try {
-                ServerSocket serverSocket = new ServerSocket(PORT);
-                Log.print("Server started on port " + PORT);
-                while (true) {
-                    Connection conn = new Connection(serverSocket.accept());
-                    onConnect.accept(conn);
-                }
-            } catch (IOException ex) {
-                Log.error(ex);
-            }
         }).start();
     }
 }

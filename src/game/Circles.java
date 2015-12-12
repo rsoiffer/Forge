@@ -5,10 +5,10 @@
  */
 package game;
 
-import core.AbstractEntity;
-import core.Core;
-import core.Input;
-import core.Signal;
+import engine.AbstractEntity;
+import engine.Core;
+import engine.Input;
+import engine.Signal;
 import graphics.Graphics2D;
 import graphics.Window;
 import static org.lwjgl.opengl.GL11.*;

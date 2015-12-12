@@ -1,72 +1,74 @@
 package network;
 
+import engine.Core;
+import engine.Signal;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
+import static network.NetworkUtils.READERS;
+import static network.NetworkUtils.WRITERS;
 import util.Log;
 
 public class Connection {
 
-    @FunctionalInterface
-    public interface MessageReader<T> {
+    private Socket socket;
+    DataInputStream input;
+    DataOutputStream output;
 
-        public T readMessage(DataInputStream inputStream) throws IOException;
-    }
-
-    @FunctionalInterface
-    public interface MessageWriter<T> {
-
-        public void writeMessage(DataOutputStream outputStream, T t) throws IOException;
-    }
-
-    private static final Map<Class, MessageReader> readers = new HashMap();
-    private static final Map<Class, MessageWriter> writers = new HashMap();
-
-    static {
-        registerType(Boolean.class, DataInputStream::readBoolean, DataOutputStream::writeBoolean);
-        registerType(Byte.class, DataInputStream::readByte, (o, b) -> o.writeByte(b));
-        registerType(Float.class, DataInputStream::readFloat, DataOutputStream::writeFloat);
-        registerType(Double.class, DataInputStream::readDouble, DataOutputStream::writeDouble);
-        registerType(Integer.class, DataInputStream::readInt, DataOutputStream::writeInt);
-        registerType(String.class, i -> i.readUTF(), DataOutputStream::writeUTF);
-        //registerType(Vec2.class, i -> new Vec2(i.readDouble(), i.readDouble()), (o, v) -> o.writeDouble(v.x));
-        //}
-    }
-
-    private final Map<Byte, Runnable> handlerMap = Collections.synchronizedMap(new HashMap());
-
-    private DataInputStream input;
-    private DataOutputStream output;
     private boolean closed;
     private final List<Runnable> onClose = new LinkedList();
 
+    private final Map<Byte, Runnable> handlerMap = new HashMap();
+    public Consumer<Byte> defaultHandler = null;
+
     public Connection(Socket socket) {
+        this.socket = socket;
         try {
             input = new DataInputStream(socket.getInputStream());
             output = new DataOutputStream(socket.getOutputStream());
 
-            new Thread(() -> {
-                while (!closed) {
-                    try {
-                        byte id = input.readByte();
-                        if (handlerMap.containsKey(id)) {
-                            handlerMap.get(id).run();
-                        } else {
-                            Log.error("Unknown message id: " + id + " is not one of known messages types " + handlerMap.keySet() + " of connection " + this);
-                            close();
-                        }
-                    } catch (IOException ex) {
-                        close();
+            Signal<Byte> message = new Signal(null);
+
+            onClose(Core.update.filter(dt -> !closed).filter(message.map(Objects::nonNull)).forEach(dt -> {
+                processMessage(message.get());
+                message.set((Byte) null);
+            })::destroy);
+
+            message.filter(message.map(Objects::isNull)).onEvent(() -> new Thread(() -> {
+                try {
+                    byte id = input.readByte();
+                    if (Core.running) {
+                        message.set(id);
+                    } else {
+                        processMessage(id);
+                        message.set((Byte) null);
                     }
+                } catch (IOException ex) {
+                    close();
                 }
-            }).start();
+            }).start());
+
+            message.sendEvent();
+
+//            new Thread(() -> {
+//                try {
+//                    while (!closed) {
+//                        if (message.o == null) {
+//                            byte id = input.readByte();
+//                            if (Core.running) {
+//                                message.o = id;
+//                            } else {
+//                                processMessage(id);
+//                            }
+//                        }
+//                    }
+//                } catch (IOException ex) {
+//                    close();
+//                }
+//            }).start();
         } catch (IOException ex) {
             close();
         }
@@ -74,6 +76,10 @@ public class Connection {
 
     public void close() {
         closed = true;
+        try {
+            socket.close();
+        } catch (IOException ex) {
+        }
         handlerMap.clear();
         onClose.forEach(Runnable::run);
         onClose.clear();
@@ -87,46 +93,56 @@ public class Connection {
         onClose.add(r);
     }
 
-    public <T> T read(Class<T> c) {
-        try {
-            return (T) readers.get(c).readMessage(input);
-        } catch (IOException ex) {
+    private void processMessage(byte id) {
+        if (handlerMap.containsKey(id)) {
+            handlerMap.get(id).run();
+        } else if (defaultHandler != null) {
+            defaultHandler.accept(id);
+        } else {
+            Log.error("Unknown message id: " + id + " is not one of known messages types " + handlerMap.keySet() + " of connection " + this);
             close();
-            return null;
         }
+    }
+
+    public <T> T read(Class<T> c) {
+        if (!closed) {
+            try {
+                return (T) READERS.get(c).read(this);
+            } catch (IOException ex) {
+                close();
+            }
+        }
+        return null;
     }
 
     public void registerHandler(int id, Runnable handler) {
         handlerMap.put((byte) id, handler);
     }
 
-    public static <T> void registerType(Class<T> c, MessageReader<T> reader, MessageWriter<T> writer) {
-        readers.put(c, reader);
-        writers.put(c, writer);
-    }
-
     public void sendMessage(int id, Object... data) {
-        sendMessage(id, Arrays.asList(data));
-    }
-
-    public void sendMessage(int id, Iterable data) {
-        sendMessage(id, () -> data.forEach(this::write));
+        sendMessage(id, () -> write(data));
     }
 
     public void sendMessage(int id, Runnable printer) {
-        try {
-            output.writeByte(id);
-            printer.run();
-        } catch (IOException ex) {
-            close();
+        if (!closed) {
+            try {
+                output.writeByte(id);
+                printer.run();
+            } catch (IOException ex) {
+                close();
+            }
         }
     }
 
-    public void write(Object o) {
-        try {
-            writers.get(o.getClass()).writeMessage(output, o);
-        } catch (IOException ex) {
-            close();
+    public void write(Object... a) {
+        if (!closed) {
+            try {
+                for (Object o : a) {
+                    WRITERS.get(o.getClass()).write(this, o);
+                }
+            } catch (IOException ex) {
+                close();
+            }
         }
     }
 }
