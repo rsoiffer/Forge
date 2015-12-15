@@ -1,7 +1,7 @@
 package particles.drawers;
 
 import graphics.Graphics2D;
-import graphics.Texture;
+import graphics.data.Texture;
 import graphics.loading.SpriteContainer;
 import java.util.function.Function;
 import static org.lwjgl.opengl.GL11.*;

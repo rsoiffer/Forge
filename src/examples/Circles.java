@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game;
+package examples;
 
 import engine.AbstractEntity;
 import engine.Core;
 import engine.Input;
 import engine.Signal;
 import graphics.Graphics2D;
-import graphics.Window;
+import graphics.Window2D;
 import static org.lwjgl.opengl.GL11.*;
 import util.*;
 
@@ -26,9 +26,9 @@ public class Circles {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
         Runnable newCircle = () -> new AbstractEntity.LAE(c -> {
-            Signal<Vec2> position = Premade.makePosition(c);
+            Signal<Vec2> position = Premade2D.makePosition(c);
             position.set(Input.getMouse());
-            Signal<Vec2> velocity = Premade.makeVelocity(c);
+            Signal<Vec2> velocity = Premade2D.makeVelocity(c);
             velocity.set(Vec2.randomCircle(50).add(new Vec2(0, 150)));
 
             Mutable<Color4> color = new Mutable(new Color4(1, .2, .05, .1));
@@ -38,14 +38,14 @@ public class Circles {
             Core.update.filter(dt -> color.o.a < 0).onEvent(c::destroy);
 
             c.onUpdate(dt -> {
-                if (Math.abs(position.get().x) + 20 > Window.viewSize.x / 2) {
+                if (Math.abs(position.get().x) + 20 > Window2D.viewSize.x / 2) {
                     velocity.edit(new Vec2(-1, 1)::multiply);
                 }
-                if (Math.abs(position.get().y) + 20 > Window.viewSize.y / 2) {
+                if (Math.abs(position.get().y) + 20 > Window2D.viewSize.y / 2) {
                     velocity.edit(new Vec2(1, -1)::multiply);
                 }
-                position.edit(p -> p.clamp(Window.viewSize.multiply(-.5).add(new Vec2(20, 20)),
-                        Window.viewSize.multiply(.5).subtract(new Vec2(20, 20))));
+                position.edit(p -> p.clamp(Window2D.viewSize.multiply(-.5).add(new Vec2(20, 20)),
+                        Window2D.viewSize.multiply(.5).subtract(new Vec2(20, 20))));
             });
 
             //Core.timer(20, c::destroy);

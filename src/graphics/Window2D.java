@@ -12,7 +12,7 @@ import static util.Color4.WHITE;
 import util.Vec2;
 import static util.Vec2.ZERO;
 
-public abstract class Window {
+public abstract class Window2D {
 
     public static Vec2 viewPos;
     public static Vec2 viewSize;
@@ -22,12 +22,12 @@ public abstract class Window {
         viewSize = new Vec2(width, height);
         viewPos = ZERO;
         boolean startFullscreen = false;
-        
+
         background = WHITE;
 
         try {
             //Display Init
-            Camera.setDisplayMode(viewSize, startFullscreen);
+            Camera.setDisplayMode(width, height, startFullscreen);
             //Display.setVSyncEnabled(true);
             Display.setResizable(true);
             Display.setTitle(title);
@@ -44,13 +44,13 @@ public abstract class Window {
             ex.printStackTrace();
         }
 
-        Input.whenKey(Keyboard.KEY_F11, true).onEvent(() -> Camera.setDisplayMode(viewSize, !Display.isFullscreen()));
+        Input.whenKey(Keyboard.KEY_F11, true).onEvent(() -> Camera.setDisplayMode(width, height, !Display.isFullscreen()));
         Input.whenKey(Keyboard.KEY_ESCAPE, true).onEvent(() -> System.exit(0));
         Core.update.onEvent(() -> update());
     }
 
     public static void update() {
-        Camera.calculateViewport(viewSize);
+        Camera.calculateViewport(aspectRatio());
         Camera.setProjection2D(LL(), UR());
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

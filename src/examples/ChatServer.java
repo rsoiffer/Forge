@@ -1,7 +1,9 @@
-package network;
+package examples;
 
 import java.util.LinkedList;
 import java.util.List;
+import network.Connection;
+import network.NetworkUtils;
 import util.Log;
 
 public class ChatServer {

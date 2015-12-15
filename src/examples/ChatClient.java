@@ -1,6 +1,8 @@
-package network;
+package examples;
 
 import java.util.Scanner;
+import network.Connection;
+import network.NetworkUtils;
 
 public class ChatClient {
 

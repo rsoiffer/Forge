@@ -1,4 +1,4 @@
-package graphics;
+package graphics.data;
 
 import java.awt.Color;
 import java.awt.FontMetrics;

@@ -52,23 +52,6 @@ public class Connection {
             }).start());
 
             message.sendEvent();
-
-//            new Thread(() -> {
-//                try {
-//                    while (!closed) {
-//                        if (message.o == null) {
-//                            byte id = input.readByte();
-//                            if (Core.running) {
-//                                message.o = id;
-//                            } else {
-//                                processMessage(id);
-//                            }
-//                        }
-//                    }
-//                } catch (IOException ex) {
-//                    close();
-//                }
-//            }).start();
         } catch (IOException ex) {
             close();
         }

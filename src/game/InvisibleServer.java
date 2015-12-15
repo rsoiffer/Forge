@@ -5,7 +5,7 @@ import java.util.List;
 import network.Connection;
 import network.NetworkUtils;
 import util.Log;
-import util.Vec2;
+import util.Vec3;
 
 public class InvisibleServer {
 
@@ -30,7 +30,7 @@ public class InvisibleServer {
             conn.onClose(() -> Log.print("Client " + info.id + " disconnected"));
 
             conn.registerHandler(0, () -> {
-                Vec2 pos = conn.read(Vec2.class);
+                Vec3 pos = conn.read(Vec3.class);
                 double rot = conn.read(Double.class);
                 boolean isLeft = conn.read(Boolean.class);
                 clients.stream().filter(ci -> ci != info).forEach(ci -> ci.conn.sendMessage(0, pos, rot, isLeft));

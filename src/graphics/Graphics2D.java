@@ -1,5 +1,7 @@
 package graphics;
 
+import graphics.data.GLFont;
+import graphics.data.Texture;
 import graphics.loading.FontContainer;
 import util.Color4;
 import util.Vec2;

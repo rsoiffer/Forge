@@ -3,32 +3,31 @@ package graphics;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import util.Vec2;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.util.glu.GLU.gluLookAt;
+import static org.lwjgl.util.glu.GLU.gluPerspective;
+import util.Vec2;
+import util.Vec3;
 
 public abstract class Camera {
 
-    public static void calculateViewport(Vec2 viewSize) {
+    public static void calculateViewport(double aspectRatio) {
         int w = Display.getWidth();
         int h = Display.getHeight();
-        int dw = (int) viewSize.x;
-        int dh = (int) viewSize.y;
         int vw, vh;
-        if (w * dh > h * dw) {
+        if (w > h * aspectRatio) {
             vh = h;
-            vw = dw * h / dh;
+            vw = (int) (h * aspectRatio);
         } else {
             vw = w;
-            vh = dh * w / dw;
+            vh = (int) (w / aspectRatio);
         }
         int left = (w - vw) / 2;
         int bottom = (h - vh) / 2;
         glViewport(left, bottom, vw, vh);
     }
 
-    public static void setDisplayMode(Vec2 viewSize, boolean fullscreen) {
-        int width = (int) viewSize.x;
-        int height = (int) viewSize.y;
+    public static void setDisplayMode(int width, int height, boolean fullscreen) {
         // return if requested DisplayMode is already set
         if ((Display.getDisplayMode().getWidth() == width)
                 && (Display.getDisplayMode().getHeight() == height)
@@ -82,5 +81,18 @@ public abstract class Camera {
 
         glDisable(GL_ALPHA_TEST);
         glDisable(GL_LIGHTING);
+    }
+
+    public static void setProjection3D(double fov, double aspectRatio, Vec3 pos, Vec3 lookAt, Vec3 UP) {
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        gluPerspective((float) fov, (float) aspectRatio, 0.1f, 1000);
+        gluLookAt((float) pos.x, (float) pos.y, (float) pos.z,
+                (float) lookAt.x, (float) lookAt.y, (float) lookAt.z,
+                (float) UP.x, (float) UP.y, (float) UP.z);
+        glMatrixMode(GL_MODELVIEW);
+
+        glEnable(GL_LIGHTING);
+        glEnable(GL_ALPHA_TEST);
     }
 }

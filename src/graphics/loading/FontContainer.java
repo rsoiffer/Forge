@@ -1,10 +1,10 @@
 package graphics.loading;
 
-import graphics.GLFont;
+import graphics.data.GLFont;
 import java.awt.Font;
 import java.util.HashMap;
 
-public class FontContainer {
+public abstract class FontContainer {
 
     private static HashMap<String, GLFont> fontMap = new HashMap();
 

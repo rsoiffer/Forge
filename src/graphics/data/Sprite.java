@@ -1,9 +1,12 @@
-package graphics;
+package graphics.data;
 
+import graphics.Graphics2D;
+import graphics.Graphics3D;
 import graphics.loading.SpriteContainer;
 import java.util.ArrayList;
 import util.Color4;
 import util.Vec2;
+import util.Vec3;
 
 public class Sprite {
 
@@ -31,6 +34,12 @@ public class Sprite {
     public void draw(Vec2 pos, double rot) {
         if (visible) {
             Graphics2D.drawSprite(getTexture(), pos, scale, rot, color);
+        }
+    }
+
+    public void draw(Vec3 pos, double tilt, double rot) {
+        if (visible) {
+            Graphics3D.drawSprite(getTexture(), pos, scale, tilt, rot, color);
         }
     }
 

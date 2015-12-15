@@ -1,4 +1,4 @@
-package game;
+package examples;
 
 import engine.AbstractEntity;
 import engine.Core;
@@ -12,9 +12,9 @@ public class Bullet extends AbstractEntity {
 
     @Override
     public void create() {
-        position = Premade.makePosition(this);
-        velocity = Premade.makeVelocity(this);
-        Premade.makeCircleGraphics(this, 4, BLUE);
+        position = Premade2D.makePosition(this);
+        velocity = Premade2D.makeVelocity(this);
+        Premade2D.makeCircleGraphics(this, 4, BLUE);
 
         Core.timer(1, () -> destroy());
     }

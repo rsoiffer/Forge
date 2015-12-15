@@ -1,4 +1,4 @@
-package graphics;
+package graphics.data;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;

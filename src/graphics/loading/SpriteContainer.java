@@ -1,6 +1,6 @@
 package graphics.loading;
 
-import graphics.Texture;
+import graphics.data.Texture;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;

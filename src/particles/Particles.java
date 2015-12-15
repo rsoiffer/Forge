@@ -4,8 +4,8 @@ import engine.AbstractEntity.LAE;
 import engine.Core;
 import engine.Input;
 import engine.Signal;
-import game.Premade;
-import graphics.Window;
+import examples.Premade2D;
+import graphics.Window2D;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
 import particles.drawers.MetaballDrawer;
@@ -51,7 +51,7 @@ public class Particles {
         ParticleEmitter<TraceParticle> rain = new ParticleEmitter();
         rain.create();
         rain.drawer = new TraceDrawer(GL_ONE_MINUS_SRC_ALPHA, p -> new Color4(0, .2, .8, .5));
-        Core.interval(.01).onEvent(() -> rain.particles.add(new TraceParticle(Window.viewSize.multiply(new Vec2(Math.random() - .5, 1.5)), new Vec2(0, -3500), 5)));
+        Core.interval(.01).onEvent(() -> rain.particles.add(new TraceParticle(Window2D.viewSize.multiply(new Vec2(Math.random() - .5, 1.5)), new Vec2(0, -3500), 5)));
         rain.onUpdate.add((dt, p) -> {
             if (w.contains(p.pos)) {
                 w.splash(p.pos.x, 100, drops);
@@ -61,11 +61,11 @@ public class Particles {
 
         Input.whenMouse(0, true).onEvent(() -> {
             new LAE(rock -> {
-                Signal<Vec2> position = Premade.makePosition(rock);
+                Signal<Vec2> position = Premade2D.makePosition(rock);
                 position.set(Input.getMouse());
-                Signal<Vec2> velocity = Premade.makeVelocity(rock);
+                Signal<Vec2> velocity = Premade2D.makeVelocity(rock);
                 rock.onUpdate(dt -> velocity.edit(new Vec2(0, -1000 * dt)::add));
-                Premade.makeSpriteGraphics(rock, "rock");
+                Premade2D.makeSpriteGraphics(rock, "rock");
 
                 Mutable<Boolean> canSplash = new Mutable(true);
                 rock.onUpdate(dt -> {

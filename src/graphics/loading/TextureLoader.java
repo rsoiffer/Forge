@@ -1,6 +1,6 @@
 package graphics.loading;
 
-import graphics.Texture;
+import graphics.data.Texture;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.color.ColorSpace;
@@ -30,7 +30,7 @@ import static org.lwjgl.opengl.GL11.*;
  * @author Kevin Glass
  * @author Brian Matzon
  */
-public class TextureLoader {
+public abstract class TextureLoader {
 
     /**
      * The table of textures that have been loaded in this loader

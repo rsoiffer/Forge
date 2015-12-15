@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 import util.Color4;
 import util.Log;
 import util.Vec2;
+import util.Vec3;
 
 public abstract class NetworkUtils {
 
@@ -73,6 +74,7 @@ public abstract class NetworkUtils {
 
         registerType(Color4.class, c -> new Color4(c.read(Double.class), c.read(Double.class), c.read(Double.class), c.read(Double.class)), (c, o) -> c.write(o.r, o.g, o.b, o.a));
         registerType(Vec2.class, c -> new Vec2(c.read(Double.class), c.read(Double.class)), (c, v) -> c.write(v.x, v.y));
+        registerType(Vec3.class, c -> new Vec3(c.read(Double.class), c.read(Double.class), c.read(Double.class)), (c, v) -> c.write(v.x, v.y, v.z));
     }
 
     private static <T> void registerBasicType(Class<T> c, Reader<DataInputStream, T> reader, Writer<DataOutputStream, T> writer) {

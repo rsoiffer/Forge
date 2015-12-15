@@ -1,4 +1,4 @@
-package graphics;
+package graphics.data;
 
 import static org.lwjgl.opengl.GL11.glBindTexture;
 

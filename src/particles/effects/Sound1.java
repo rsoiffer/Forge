@@ -1,6 +1,6 @@
 package particles.effects;
 
-import graphics.Window;
+import graphics.Window2D;
 import static org.lwjgl.opengl.GL11.GL_ONE;
 import particles.LifeTimeParticle;
 import particles.ParticleEmitter;
@@ -22,13 +22,13 @@ public class Sound1 extends ParticleEmitter<LifeTimeParticle> {
         super.create();
         drawer = new LineDrawer<>(GL_ONE, new Color4(.6, 0, 1));
         onUpdate.add((dt, p) -> {
-            if (Math.abs(p.pos.x) > Window.viewSize.x / 2) {
+            if (Math.abs(p.pos.x) > Window2D.viewSize.x / 2) {
                 p.vel = p.vel.multiply(new Vec2(-1, 1));
             }
-            if (Math.abs(p.pos.y) > Window.viewSize.y / 2) {
+            if (Math.abs(p.pos.y) > Window2D.viewSize.y / 2) {
                 p.vel = p.vel.multiply(new Vec2(1, -1));
             }
-            p.pos = p.pos.clamp(Window.viewSize.multiply(-.5), Window.viewSize.multiply(.5));
+            p.pos = p.pos.clamp(Window2D.viewSize.multiply(-.5), Window2D.viewSize.multiply(.5));
         });
         Util.repeat(10000, i -> particles.add(new LifeTimeParticle(position, Vec2.fromPolar(200, i * Math.PI / 5000), 100)));
         onRemove.add(p -> {

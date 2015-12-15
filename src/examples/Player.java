@@ -1,10 +1,10 @@
-package game;
+package examples;
 
 import engine.AbstractEntity;
 import engine.Core;
 import engine.Input;
 import engine.Signal;
-import graphics.Sprite;
+import graphics.data.Sprite;
 import static util.Color4.*;
 import util.Vec2;
 
@@ -18,10 +18,10 @@ public class Player extends AbstractEntity {
 
     @Override
     public void create() {
-        Signal<Vec2> position = Premade.makePosition(this);
-        Premade.makeVelocity(this);
-        Premade.makeWASDMovement(this, 300);
-        Signal<Sprite> s = Premade.makeSpriteGraphics(this, "box");
+        Signal<Vec2> position = Premade2D.makePosition(this);
+        Premade2D.makeVelocity(this);
+        Premade2D.makeWASDMovement(this, 300);
+        Signal<Sprite> s = Premade2D.makeSpriteGraphics(this, "box");
 
         Input.whenMouse(0, true).onEvent(() -> {
             Bullet b = new Bullet();

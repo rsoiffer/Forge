@@ -1,6 +1,10 @@
 package particles.drawers;
 
-import graphics.*;
+import graphics.Camera;
+import graphics.Graphics2D;
+import graphics.Window2D;
+import graphics.data.Shader;
+import graphics.data.Texture;
 import graphics.loading.SpriteContainer;
 import static org.lwjgl.opengl.EXTFramebufferObject.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -80,7 +84,7 @@ public class MetaballDrawer implements Drawer {
 
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-        Camera.calculateViewport(Window.viewSize);
+        Camera.calculateViewport(Window2D.aspectRatio());
 
         metaball.enable();
         glEnable(GL_TEXTURE_2D);
@@ -89,13 +93,13 @@ public class MetaballDrawer implements Drawer {
 
         glBegin(GL_QUADS);
         glTexCoord2d(0, 0);
-        Window.LL().glVertex();
+        Window2D.LL().glVertex();
         glTexCoord2d(0, 1);
-        Window.UL().glVertex();
+        Window2D.UL().glVertex();
         glTexCoord2d(1, 1);
-        Window.UR().glVertex();
+        Window2D.UR().glVertex();
         glTexCoord2d(1, 0);
-        Window.LR().glVertex();
+        Window2D.LR().glVertex();
         glEnd();
         Shader.clear();
     }

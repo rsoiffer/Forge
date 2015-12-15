@@ -1,6 +1,7 @@
 package engine;
 
-import graphics.Window;
+import graphics.Window2D;
+import graphics.Window3D;
 import graphics.loading.FontContainer;
 import java.io.File;
 import java.util.Map;
@@ -17,14 +18,20 @@ public abstract class Core {
     public static int speed = 60;
     public static double timeMult = 1;
     public static double timeCap = .1;
-    public static double timeMin = .001;
+    public static double timeMin = .01;
+
+    public static boolean is3D;
 
     public static boolean running;
 
     public static void init() {
         running = true;
         System.setProperty("org.lwjgl.librarypath", new File("natives").getAbsolutePath());
-        Window.initialize(1200, 800, "So how are you today?");
+        if (!is3D) {
+            Window2D.initialize(1200, 800, "So how are you today?");
+        } else {
+            Window3D.initialize(1200, 800, "So how are you today?");
+        }
         FontContainer.init();
     }
 

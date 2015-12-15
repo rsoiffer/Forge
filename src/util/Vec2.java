@@ -125,12 +125,10 @@ public class Vec2 {
             } else {
                 return 4;
             }
+        } else if (other.y >= y) {
+            return 2;
         } else {
-            if (other.y >= y) {
-                return 2;
-            } else {
-                return 3;
-            }
+            return 3;
         }
     }
 
@@ -154,6 +152,19 @@ public class Vec2 {
         return new Vec2(x * Math.cos(t) - y * Math.sin(t), x * Math.sin(t) + y * Math.cos(t));
     }
 
+    public Vec2 subtract(Vec2 other) {
+        return new Vec2(x - other.x, y - other.y);
+    }
+
+    @Override
+    public String toString() {
+        return "(" + (float) x + ", " + (float) y + ")";
+    }
+
+    public Vec3 toVec3() {
+        return new Vec3(x, y, 0);
+    }
+
     public Vec2 withLength(double l) {
         if (l == 0.0) {
             return ZERO;
@@ -167,14 +178,5 @@ public class Vec2 {
 
     public Vec2 withY(double newy) {
         return new Vec2(x, newy);
-    }
-
-    public Vec2 subtract(Vec2 other) {
-        return new Vec2(x - other.x, y - other.y);
-    }
-
-    @Override
-    public String toString() {
-        return "(" + (float) x + ", " + (float) y + ")";
     }
 }
