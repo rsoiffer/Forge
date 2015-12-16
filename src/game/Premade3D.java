@@ -33,10 +33,10 @@ public abstract class Premade3D {
         Signal<Vec3> velocity = e.get("velocity", Vec3.class);
         e.onUpdate(dt -> velocity.set(ZERO));
         Supplier<Boolean> onlyW = () -> Input.keySignal(KEY_W).get() && !Input.keySignal(KEY_S).get() && !Input.keySignal(KEY_A).get() && !Input.keySignal(KEY_D).get();
-        e.add(Input.whileKeyDown(KEY_W).forEach(dt -> velocity.edit(Window3D.forwards().multiply((onlyW.get() ? 2 : 1) * dt * speed)::add)),
-                Input.whileKeyDown(KEY_S).forEach(dt -> velocity.edit(Window3D.forwards().multiply(-dt * speed)::add)),
-                Input.whileKeyDown(KEY_A).forEach(dt -> velocity.edit(Window3D.UP.cross(Window3D.forwards()).multiply(dt * speed)::add)),
-                Input.whileKeyDown(KEY_D).forEach(dt -> velocity.edit(Window3D.UP.cross(Window3D.forwards()).multiply(-dt * speed)::add)));
+        e.add(Input.whileKeyDown(KEY_W).forEach(dt -> velocity.edit(Window3D.forwards().multiply((onlyW.get() ? 2 : 1) * speed)::add)),
+                Input.whileKeyDown(KEY_S).forEach(dt -> velocity.edit(Window3D.forwards().multiply(-speed)::add)),
+                Input.whileKeyDown(KEY_A).forEach(dt -> velocity.edit(Window3D.UP.cross(Window3D.forwards()).multiply(speed)::add)),
+                Input.whileKeyDown(KEY_D).forEach(dt -> velocity.edit(Window3D.UP.cross(Window3D.forwards()).multiply(-speed)::add)));
 //        e.add(Input.whileKeyDown(Keyboard.KEY_A).forEach(dt -> velocity.edit(new Vec2(-speed, 0)::add)),
 //                Input.whileKeyDown(Keyboard.KEY_D).forEach(dt -> velocity.edit(new Vec2(speed, 0)::add)),
 //                Input.whileKeyDown(Keyboard.KEY_W).forEach(dt -> velocity.edit(new Vec2(0, speed)::add)),

@@ -8,7 +8,6 @@ import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
 import util.Color4;
 import static util.Color4.BLACK;
-import util.Util;
 import util.Vec3;
 import static util.Vec3.ZERO;
 import util.Vec3Polar;
@@ -48,11 +47,11 @@ public abstract class Window3D {
             glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
             //----------- Variables & method calls added for Lighting Test -----------//
-            glShadeModel(GL_SMOOTH);
-            glLightModel(GL_LIGHT_MODEL_AMBIENT, Util.floatBuffer(.5, .5, .5, 1));		// global ambient light
-
-            glEnable(GL_COLOR_MATERIAL);								// enables opengl to use glColor3f to define material color
-            glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);			// tell opengl glColor3f effects the ambient and diffuse properties of material
+//            glShadeModel(GL_SMOOTH);
+//            glLightModel(GL_LIGHT_MODEL_AMBIENT, Util.floatBuffer(.5, .5, .5, 1));		// global ambient light
+//
+//            glEnable(GL_COLOR_MATERIAL);								// enables opengl to use glColor3f to define material color
+//            glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);			// tell opengl glColor3f effects the ambient and diffuse properties of material
             //----------- END: Variables & method calls added for Lighting Test -----------//
         } catch (LWJGLException ex) {
             ex.printStackTrace();

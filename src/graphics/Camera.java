@@ -92,7 +92,7 @@ public abstract class Camera {
                 (float) UP.x, (float) UP.y, (float) UP.z);
         glMatrixMode(GL_MODELVIEW);
 
-        glEnable(GL_LIGHTING);
+        //glEnable(GL_LIGHTING);
         glEnable(GL_ALPHA_TEST);
     }
 }

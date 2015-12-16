@@ -33,6 +33,15 @@ public class Color4 {
         GL11.glColor4d(r, g, b, a);
     }
 
+    public static Color4 gray(double d) {
+        return new Color4(d, d, d);
+    }
+
+    @Override
+    public String toString() {
+        return "Color[" + r + ", " + g + ", " + b + ", " + a + "]";
+    }
+
     public Color4 withR(double r) {
         return new Color4(r, g, b, a);
     }

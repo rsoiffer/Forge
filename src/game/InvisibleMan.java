@@ -3,7 +3,6 @@ package game;
 import engine.AbstractEntity;
 import engine.Core;
 import engine.Signal;
-import graphics.Graphics3D;
 import graphics.Window3D;
 import graphics.data.Sprite;
 import network.Connection;
@@ -22,7 +21,7 @@ public class InvisibleMan extends AbstractEntity {
         Signal<Vec3> position = Premade3D.makePosition(this);
         Signal<Vec3> velocity = Premade3D.makeVelocity(this);
         Premade3D.makeMouseLook(this, 1, -1.5, 1.5);
-        Premade3D.makeWASDMovement(this, 50);
+        Premade3D.makeWASDMovement(this, 1);
         Window3D.pos = new Vec3(0, 0, 1);
         position.forEach(v -> Window3D.pos = v.add(new Vec3(0, 0, 1)));
 
@@ -36,18 +35,26 @@ public class InvisibleMan extends AbstractEntity {
             isLeft.o = !isLeft.o;
         });
 
-        onRender(() -> Graphics3D.fillRect(new Vec3(0, 0, -.001), new Vec2(10), 0, 0, new Color4(.9, .9, .9)));
+        //onRender(() -> Graphics3D.fillRect(new Vec3(0, 0, -.001), new Vec2(10), 0, 0, new Color4(.9, .9, .9)));
     }
 
     public static class Footstep extends AbstractEntity {
 
         @Override
         public void create() {
-            Premade3D.makePosition(this);
+            Signal<Vec3> position = Premade3D.makePosition(this);
             Premade3D.makeRotation(this);
-            Signal<Sprite> s = Premade3D.makeSpriteGraphics(this, "footstep");
-            onUpdate(dt -> s.get().color = s.get().color.withA(s.get().color.a * Math.pow(.9, dt)));
-            Core.timer(60, this::destroy);
+            Signal<Sprite> s = Premade3D.makeSpriteGraphics(this, "footstep_white");
+            onUpdate(dt -> position.edit(new Vec3(0, 0, -dt / 10000)::add));
+            Signal<Double> opaqueness = new Signal(.5);
+            opaqueness.forEach(t -> {
+                s.get().color = Color4.gray(1 - t);
+                //System.out.println(1 - t);
+            });
+            onUpdate(dt -> opaqueness.edit(t -> t * Math.pow(.98, dt)));
+//            onUpdate(dt -> s.get().color = Color4.gray(1 - (1 - s.get().color.r) * Math.pow(.08, dt)));
+            //onUpdate(dt -> System.out.println(s.get().color));
+            Core.timer(600, this::destroy);
         }
 
         public void set(Vec3 pos, double rot, boolean isLeft) {
