@@ -65,8 +65,10 @@ public class Tutorial5 {
         The count() function turns the Signal<String> that stores words into a Signal<Integer> that counts words.
         We then use the forEach() function to print the count (like above).
          */
-        wordSignal.filter((String word) -> word.equals("potato"))
-                .count().forEach((Integer i) -> System.out.println(i + " points"));
+        wordSignal //We start with a Signal of all the words
+                .filter((String word) -> word.equals("potato")) //We keep only the words that are "potato"
+                .count() //We count all the words
+                .forEach((Integer i) -> System.out.println(i + " points")); //We print the count
 
         //The rest of the code just uses a Scanner to read user input.
         Scanner in = new Scanner(System.in);
