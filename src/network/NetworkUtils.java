@@ -16,10 +16,8 @@ import util.Vec3;
 
 public abstract class NetworkUtils {
 
+    //Starting and connecting to servers
     public static final int PORT = 51234;
-
-    static final Map<Class, Reader<Connection, Object>> READERS = new HashMap();
-    static final Map<Class, Writer<Connection, Object>> WRITERS = new HashMap();
 
     public static Connection connect(String ip) {
         if (ip.equals("")) {
@@ -27,8 +25,11 @@ public abstract class NetworkUtils {
         }
         try {
             Connection c = new Connection(new Socket(ip, PORT));
+            System.out.println("Connected to server");
+            c.onClose(() -> System.out.println("Disconnected from server"));
+//            //Going too fast sometimes means the message handlers haven't registered
 //            try {
-//                Thread.sleep(5); //Going too fast means the message handlers haven't registered
+//                Thread.sleep(5);
 //            } catch (InterruptedException ex) {
 //                Log.error(ex);
 //            }
@@ -41,7 +42,11 @@ public abstract class NetworkUtils {
 
     public static Connection connectSimple() {
         System.out.println("Enter the ip adress to connect to:");
-        return connect(new Scanner(System.in).nextLine());
+        Connection c = connect(new Scanner(System.in).nextLine());
+        if (c == null) {
+            throw new RuntimeException("Failed to connect to server");
+        }
+        return c;
     }
 
     public static Thread server(Consumer<Connection> onConnect) {
@@ -51,8 +56,9 @@ public abstract class NetworkUtils {
                 Log.print("Server started on port " + PORT);
                 while (true) {
                     Connection conn = new Connection(serverSocket.accept());
+                    //Going too fast somtimes means the message handlers haven't registered
                     try {
-                        Thread.sleep(5); //Going too fast means the message handlers haven't registered
+                        Thread.sleep(5);
                     } catch (InterruptedException ex) {
                         Log.error(ex);
                     }
@@ -63,6 +69,10 @@ public abstract class NetworkUtils {
             }
         });
     }
+
+    //Readers and writers
+    static final Map<Class, Reader<Connection, Object>> READERS = new HashMap();
+    static final Map<Class, Writer<Connection, Object>> WRITERS = new HashMap();
 
     static {
         registerBasicType(Boolean.class, DataInputStream::readBoolean, DataOutputStream::writeBoolean);

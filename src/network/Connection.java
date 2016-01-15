@@ -7,7 +7,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.*;
-import java.util.function.Consumer;
 import static network.NetworkUtils.READERS;
 import static network.NetworkUtils.WRITERS;
 import util.Log;
@@ -22,7 +21,7 @@ public class Connection {
     private final List<Runnable> onClose = new LinkedList();
 
     private final Map<Byte, Runnable> handlerMap = new HashMap();
-    public Consumer<Byte> defaultHandler = null;
+    //public Consumer<Byte> defaultHandler = null;
 
     public Connection(Socket socket) {
         this.socket = socket;
@@ -32,10 +31,11 @@ public class Connection {
 
             Signal<Byte> message = new Signal(null);
 
-            onClose(Core.update.filter(dt -> !closed).filter(message.map(Objects::nonNull)).forEach(dt -> {
-                processMessage(message.get());
-                message.set((Byte) null);
-            })::destroy);
+            onClose(Core.update.filter(dt -> !closed).filter(message.map(Objects::nonNull))
+                    .forEach(dt -> new Thread(() -> {
+                        processMessage(message.get());
+                        message.set((Byte) null);
+                    }))::destroy);
 
             message.filter(message.map(Objects::isNull)).onEvent(() -> new Thread(() -> {
                 try {
@@ -79,8 +79,8 @@ public class Connection {
     private void processMessage(byte id) {
         if (handlerMap.containsKey(id)) {
             handlerMap.get(id).run();
-        } else if (defaultHandler != null) {
-            defaultHandler.accept(id);
+            //} else if (defaultHandler != null) {
+            //    defaultHandler.accept(id);
         } else {
             Log.error("Unknown message id: " + id + " is not one of known messages types " + handlerMap.keySet() + " of connection " + this);
             close();
