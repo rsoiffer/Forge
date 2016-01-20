@@ -21,7 +21,6 @@ public abstract class Core {
     public static double timeMin = .01;
 
     public static boolean is3D;
-
     public static boolean running;
 
     public static void init() {

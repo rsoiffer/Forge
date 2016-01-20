@@ -78,6 +78,7 @@ public abstract class Camera {
         glLoadIdentity();
         glOrtho(LL.x, UR.x, LL.y, UR.y, -1, 1);
         glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
 
         glDisable(GL_ALPHA_TEST);
         glDisable(GL_LIGHTING);
@@ -87,10 +88,11 @@ public abstract class Camera {
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         gluPerspective((float) fov, (float) aspectRatio, 0.1f, 1000);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
         gluLookAt((float) pos.x, (float) pos.y, (float) pos.z,
                 (float) lookAt.x, (float) lookAt.y, (float) lookAt.z,
                 (float) UP.x, (float) UP.y, (float) UP.z);
-        glMatrixMode(GL_MODELVIEW);
 
         //glEnable(GL_LIGHTING);
         glEnable(GL_ALPHA_TEST);

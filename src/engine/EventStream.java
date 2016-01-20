@@ -1,6 +1,7 @@
 package engine;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -9,7 +10,7 @@ import java.util.function.UnaryOperator;
 
 public class EventStream extends Destructible {
 
-    private final Map<Destructible, Runnable> toCall = new LinkedHashMap();
+    private final Map<Destructible, Runnable> toCall = Collections.synchronizedMap(new LinkedHashMap());
 
     private <R extends Destructible> R addChild(R child, Runnable r) {
         addChild(child);
@@ -24,7 +25,9 @@ public class EventStream extends Destructible {
     }
 
     public void sendEvent() {
-        new ArrayList<>(toCall.values()).forEach(Runnable::run);
+        ArrayList<Runnable> toRun;
+        toRun = new ArrayList<>(toCall.values());
+        toRun.forEach(Runnable::run);
     }
 
     <R> Signal<R> toSignal(Supplier<R> r) {
@@ -82,6 +85,14 @@ public class EventStream extends Destructible {
 
     public EventStream first_E(int n) {
         return filterElse_E(count().map(i -> i <= n), EventStream::destroy);
+    }
+
+    public EventStream limit(double interval) {
+        return with(Core.time(), t -> {
+            if (t.get() > interval) {
+                t.set(0.);
+            }
+        }).map(t -> t > interval).distinct().filter(b -> !b);
     }
 
     public EventStream onEvent(Runnable r) {

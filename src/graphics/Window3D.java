@@ -6,11 +6,9 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
-import util.Color4;
 import static util.Color4.BLACK;
-import util.Vec3;
 import static util.Vec3.ZERO;
-import util.Vec3Polar;
+import util.*;
 
 public abstract class Window3D {
 
@@ -32,7 +30,7 @@ public abstract class Window3D {
         try {
             //Display Init
             Camera.setDisplayMode(width, height, startFullscreen);
-            Display.setVSyncEnabled(true);
+            //Display.setVSyncEnabled(true);
             Display.setResizable(true);
             Display.setTitle(title);
             Display.create();
@@ -46,6 +44,13 @@ public abstract class Window3D {
 
             glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
+            glEnable(GL_FOG);
+            glFogi(GL_FOG_MODE, GL_LINEAR);
+            glFog(GL_FOG_COLOR, Util.floatBuffer(.95, .95, .95, 1));
+            glFogf(GL_FOG_DENSITY, 1);
+            glHint(GL_FOG_HINT, GL_NICEST);
+            glFogf(GL_FOG_START, 0);
+            glFogf(GL_FOG_END, 30);
             //----------- Variables & method calls added for Lighting Test -----------//
 //            glShadeModel(GL_SMOOTH);
 //            glLightModel(GL_LIGHT_MODEL_AMBIENT, Util.floatBuffer(.5, .5, .5, 1));		// global ambient light
@@ -67,9 +72,17 @@ public abstract class Window3D {
         return dir.subtract(UP.multiply(dir.dot(UP))).normalize();
     }
 
+    public static void guiProjection() {
+        Camera.setProjection2D(new Vec2(0), new Vec2(1));
+    }
+
+    public static void resetProjection() {
+        Camera.setProjection3D(fov, aspectRatio, pos, pos.add(facing.toVec3()), UP);
+    }
+
     public static void update() {
         Camera.calculateViewport(aspectRatio);
-        Camera.setProjection3D(fov, aspectRatio, pos, pos.add(facing.toVec3()), UP);
+        resetProjection();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor((float) background.r, (float) background.g, (float) background.b, (float) background.a);

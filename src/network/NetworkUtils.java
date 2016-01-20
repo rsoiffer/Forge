@@ -40,7 +40,7 @@ public abstract class NetworkUtils {
         }
     }
 
-    public static Connection connectSimple() {
+    public static Connection connectManual() {
         System.out.println("Enter the ip adress to connect to:");
         Connection c = connect(new Scanner(System.in).nextLine());
         if (c == null) {

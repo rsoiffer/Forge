@@ -21,7 +21,6 @@ public class Connection {
     private final List<Runnable> onClose = new LinkedList();
 
     private final Map<Byte, Runnable> handlerMap = new HashMap();
-    //public Consumer<Byte> defaultHandler = null;
 
     public Connection(Socket socket) {
         this.socket = socket;
@@ -35,7 +34,7 @@ public class Connection {
                     .forEach(dt -> new Thread(() -> {
                         processMessage(message.get());
                         message.set((Byte) null);
-                    }))::destroy);
+                    }).start())::destroy);
 
             message.filter(message.map(Objects::isNull)).onEvent(() -> new Thread(() -> {
                 try {
@@ -77,10 +76,9 @@ public class Connection {
     }
 
     private void processMessage(byte id) {
+        //System.out.println("Received message: " + id);
         if (handlerMap.containsKey(id)) {
             handlerMap.get(id).run();
-            //} else if (defaultHandler != null) {
-            //    defaultHandler.accept(id);
         } else {
             Log.error("Unknown message id: " + id + " is not one of known messages types " + handlerMap.keySet() + " of connection " + this);
             close();
@@ -107,6 +105,7 @@ public class Connection {
     }
 
     public void sendMessage(int id, Runnable printer) {
+        //System.out.println("Sent message: " + id);
         if (!closed) {
             try {
                 output.writeByte(id);
@@ -121,6 +120,9 @@ public class Connection {
         if (!closed) {
             try {
                 for (Object o : a) {
+                    if (!WRITERS.containsKey(o.getClass())) {
+                        throw new RuntimeException("Unknown data type: " + o.getClass());
+                    }
                     WRITERS.get(o.getClass()).write(this, o);
                 }
             } catch (IOException ex) {
