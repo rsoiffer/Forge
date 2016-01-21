@@ -47,9 +47,14 @@ public class Vec3 {
     }
 
     public boolean containedBy(Vec3 v1, Vec3 v2) {
-        int q1 = v1.quadrant(this);
-        int q2 = v2.quadrant(this);
-        return q1 != q2 && q1 % 2 == q2 % 2;
+        int q1 = v1.quadrantXY(this);
+        int q2 = v2.quadrantXY(this);
+        boolean con = q1 != q2 && q1 % 2 == q2 % 2;
+        
+        q1 = v1.quadrantXZ(this);
+        q2 = v2.quadrantXZ(this);
+        con &= q1 != q2 && q1 % 2 == q2 % 2;
+        return con;
     }
 
     public Vec3 cross(Vec3 other) {
@@ -129,7 +134,7 @@ public class Vec3 {
         return multiply(1 / len);
     }
 
-    public int quadrant(Vec3 other) {
+    public int quadrantXY(Vec3 other) {
         if (other.x >= x) {
             if (other.y >= y) {
                 return 1;
@@ -137,6 +142,34 @@ public class Vec3 {
                 return 4;
             }
         } else if (other.y >= y) {
+            return 2;
+        } else {
+            return 3;
+        }
+    }
+    
+    public int quadrantYZ(Vec3 other) {
+        if (other.y >= y) {
+            if (other.z >= z) {
+                return 1;
+            } else {
+                return 4;
+            }
+        } else if (other.z >= z) {
+            return 2;
+        } else {
+            return 3;
+        }
+    }
+    
+    public int quadrantXZ(Vec3 other) {
+        if (other.x >= x) {
+            if (other.z >= z) {
+                return 1;
+            } else {
+                return 4;
+            }
+        } else if (other.z >= z) {
             return 2;
         } else {
             return 3;
