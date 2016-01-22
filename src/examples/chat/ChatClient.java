@@ -1,4 +1,4 @@
-package examples;
+package examples.chat;
 
 import java.util.Scanner;
 import network.Connection;

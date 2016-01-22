@@ -1,5 +1,6 @@
 package util;
 
+import java.nio.FloatBuffer;
 import org.lwjgl.opengl.GL11;
 
 public class Color4 {
@@ -29,12 +30,24 @@ public class Color4 {
         this(1, 1, 1, 1);
     }
 
+    public void glClearColor() {
+        GL11.glClearColor((float) r, (float) g, (float) b, (float) a);
+    }
+
     public void glColor() {
         GL11.glColor4d(r, g, b, a);
     }
 
     public static Color4 gray(double d) {
         return new Color4(d, d, d);
+    }
+
+    public FloatBuffer toFloatBuffer() {
+        return Util.floatBuffer(r, g, b, a);
+    }
+
+    public FloatBuffer toFloatBuffer3() {
+        return Util.floatBuffer(r, g, b);
     }
 
     @Override

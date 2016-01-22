@@ -6,6 +6,7 @@ import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.util.glu.GLU.gluLookAt;
 import static org.lwjgl.util.glu.GLU.gluPerspective;
+import util.Pair;
 import util.Vec2;
 import util.Vec3;
 
@@ -25,6 +26,16 @@ public abstract class Camera {
         int left = (w - vw) / 2;
         int bottom = (h - vh) / 2;
         glViewport(left, bottom, vw, vh);
+    }
+
+    public static Pair getViewportSize(double aspectRatio) {
+        int w = Display.getWidth();
+        int h = Display.getHeight();
+        if (w > h * aspectRatio) {
+            return new Pair((int) (h * aspectRatio), h);
+        } else {
+            return new Pair(w, (int) (w / aspectRatio));
+        }
     }
 
     public static void setDisplayMode(int width, int height, boolean fullscreen) {

@@ -4,7 +4,7 @@ import engine.AbstractEntity.LAE;
 import engine.Core;
 import engine.Input;
 import engine.Signal;
-import examples.Premade2D;
+import examples.simplegame.Premade2D;
 import graphics.Window2D;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;

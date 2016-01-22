@@ -1,12 +1,13 @@
 package network;
 
-import engine.Core;
-import engine.Signal;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import static network.NetworkUtils.READERS;
 import static network.NetworkUtils.WRITERS;
 import util.Log;
@@ -28,29 +29,16 @@ public class Connection {
             input = new DataInputStream(socket.getInputStream());
             output = new DataOutputStream(socket.getOutputStream());
 
-            Signal<Byte> message = new Signal(null);
-
-            onClose(Core.update.filter(dt -> !closed).filter(message.map(Objects::nonNull))
-                    .forEach(dt -> new Thread(() -> {
-                        processMessage(message.get());
-                        message.set((Byte) null);
-                    }).start())::destroy);
-
-            message.filter(message.map(Objects::isNull)).onEvent(() -> new Thread(() -> {
-                try {
-                    byte id = input.readByte();
-                    if (Core.running) {
-                        message.set(id);
-                    } else {
+            new Thread(() -> {
+                while (!closed) {
+                    try {
+                        byte id = input.readByte();
                         processMessage(id);
-                        message.set((Byte) null);
+                    } catch (IOException ex) {
+                        close();
                     }
-                } catch (IOException ex) {
-                    close();
                 }
-            }).start());
-
-            message.sendEvent();
+            }).start();
         } catch (IOException ex) {
             close();
         }
@@ -76,7 +64,7 @@ public class Connection {
     }
 
     private void processMessage(byte id) {
-        //System.out.println("Received message: " + id);
+//        System.out.println("Received message: " + id);
         if (handlerMap.containsKey(id)) {
             handlerMap.get(id).run();
         } else {

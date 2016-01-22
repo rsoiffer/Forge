@@ -1,4 +1,4 @@
-package examples;
+package examples.simplegame;
 
 import engine.AbstractEntity;
 import engine.Core;

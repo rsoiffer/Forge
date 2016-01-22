@@ -30,11 +30,11 @@ public class EventStream extends Destructible {
         toRun.forEach(Runnable::run);
     }
 
-    <R> Signal<R> toSignal(Supplier<R> r) {
+    public <R> Signal<R> toSignal(Supplier<R> r) {
         return with(new Signal(r.get()), s -> s.set(r.get()));
     }
 
-    <R> Signal<R> toSignal(Signal<R> r) {
+    public <R> Signal<R> toSignal(Signal<R> r) {
         return r.addChild(with(new Signal(r.get()), s -> s.set(r.get())));
     }
 

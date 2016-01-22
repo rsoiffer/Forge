@@ -1,4 +1,4 @@
-package examples;
+package examples.chat;
 
 import java.util.LinkedList;
 import java.util.List;

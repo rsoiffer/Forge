@@ -3,6 +3,7 @@ package engine;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.*;
 
 public class Signal<T> extends EventStream implements Supplier<T> {
@@ -69,9 +70,17 @@ public class Signal<T> extends EventStream implements Supplier<T> {
 
     public Signal<T> distinct() {
         return with(new Signal(get()), s -> {
-            if (s.get() != get()) {
+            if (!Objects.equals(get(), s.get())) {
                 s.set(get());
             }
+        });
+    }
+
+    public Signal<T> doForEach(Consumer<T> c) {
+        c.accept(get());
+        return with(new Signal(get()), s -> {
+            c.accept(get());
+            s.set(get());
         });
     }
 

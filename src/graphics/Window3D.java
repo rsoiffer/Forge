@@ -5,10 +5,15 @@ import engine.Input;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
+import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT;
 import static org.lwjgl.opengl.GL11.*;
+import org.lwjgl.opengl.PixelFormat;
+import util.Color4;
 import static util.Color4.BLACK;
+import util.Vec2;
+import util.Vec3;
 import static util.Vec3.ZERO;
-import util.*;
+import util.Vec3Polar;
 
 public abstract class Window3D {
 
@@ -33,7 +38,7 @@ public abstract class Window3D {
             //Display.setVSyncEnabled(true);
             Display.setResizable(true);
             Display.setTitle(title);
-            Display.create();
+            Display.create(new PixelFormat(8, 8, 0, 8));
             //OpenGL Init
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -44,27 +49,16 @@ public abstract class Window3D {
 
             glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
-            glEnable(GL_FOG);
-            glFogi(GL_FOG_MODE, GL_LINEAR);
-            glFog(GL_FOG_COLOR, Util.floatBuffer(.95, .95, .95, 1));
-            glFogf(GL_FOG_DENSITY, 1);
-            glHint(GL_FOG_HINT, GL_NICEST);
-            glFogf(GL_FOG_START, 0);
-            glFogf(GL_FOG_END, 30);
-            //----------- Variables & method calls added for Lighting Test -----------//
-//            glShadeModel(GL_SMOOTH);
-//            glLightModel(GL_LIGHT_MODEL_AMBIENT, Util.floatBuffer(.5, .5, .5, 1));		// global ambient light
-//
-//            glEnable(GL_COLOR_MATERIAL);								// enables opengl to use glColor3f to define material color
-//            glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);			// tell opengl glColor3f effects the ambient and diffuse properties of material
-            //----------- END: Variables & method calls added for Lighting Test -----------//
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16);
         } catch (LWJGLException ex) {
             ex.printStackTrace();
         }
 
         Input.whenKey(Keyboard.KEY_F11, true).onEvent(() -> Camera.setDisplayMode(width, height, !Display.isFullscreen()));
         Input.whenKey(Keyboard.KEY_ESCAPE, true).onEvent(() -> System.exit(0));
-        Core.update.onEvent(() -> update());
+        Core.render.onEvent(() -> update());
     }
 
     public static Vec3 forwards() {
@@ -85,6 +79,6 @@ public abstract class Window3D {
         resetProjection();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glClearColor((float) background.r, (float) background.g, (float) background.b, (float) background.a);
+        background.glClearColor();
     }
 }

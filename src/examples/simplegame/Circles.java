@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package examples;
+package examples.simplegame;
 
 import engine.AbstractEntity;
 import engine.Core;
@@ -12,7 +12,11 @@ import engine.Signal;
 import graphics.Graphics2D;
 import graphics.Window2D;
 import static org.lwjgl.opengl.GL11.*;
-import util.*;
+import util.Color4;
+import static util.Color4.BLACK;
+import util.Mutable;
+import util.Util;
+import util.Vec2;
 
 /**
  *
@@ -22,6 +26,7 @@ public class Circles {
 
     public static void main(String[] args) {
         Core.init();
+        Window2D.background = BLACK;
 
         glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 

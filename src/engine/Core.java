@@ -62,15 +62,8 @@ public abstract class Core {
             double dt = deltaTime;
             updateLayers.values().forEach(s -> s.set(dt));
             //Graphics
-            if (updateScreen.o) {
-                renderLayers.values().forEach(EventStream::sendEvent);
-                updateScreen.o = false;
-                Display.update();
-                new Thread(() -> {
-                    //Display.sync(speed);
-                    updateScreen.o = true;
-                }).start();
-            }
+            renderLayers.values().forEach(EventStream::sendEvent);
+            Display.update();
         }
     }
 
