@@ -4,53 +4,78 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
+import java.util.Stack;
 import static org.lwjgl.opengl.ARBFragmentShader.GL_FRAGMENT_SHADER_ARB;
 import static org.lwjgl.opengl.ARBShaderObjects.*;
 import static org.lwjgl.opengl.ARBVertexShader.GL_VERTEX_SHADER_ARB;
 import org.lwjgl.opengl.GL11;
-import static org.lwjgl.opengl.GL11.glGetInteger;
 import static org.lwjgl.opengl.GL20.*;
 import util.Log;
 
 public class Shader {
 
-    private final int program;
+    //Stack
+    private static final Stack<Shader> SHADER_STACK = new Stack();
+
+    public static void popShader() {
+        SHADER_STACK.pop();
+        if (SHADER_STACK.isEmpty()) {
+            clear();
+        } else {
+            SHADER_STACK.peek().enable();
+        }
+    }
+
+    public static void pushShader(Shader s) {
+        SHADER_STACK.push(s);
+        s.enable();
+    }
+
+    //Shaders
+    private int id;
 
     public Shader(String name) {
-        program = glCreateProgramObjectARB();
+        this(name + ".vert", name + ".frag");
+    }
 
-        int vertShader = createShader("src/shaders/" + name + ".vert", GL_VERTEX_SHADER_ARB);
-        glAttachObjectARB(program, vertShader);
-
-        int fragShader = createShader("src/shaders/" + name + ".frag", GL_FRAGMENT_SHADER_ARB);
-        glAttachObjectARB(program, fragShader);
-
-        glLinkProgramARB(program);
-        glValidateProgramARB(program);
+    public Shader(String vert, String frag) {
+        if (vert.endsWith(".vert")) {
+            vert = fileToString(vert);
+        }
+        if (frag.endsWith(".frag")) {
+            frag = fileToString(frag);
+        }
+        create(createShader(vert, GL_VERTEX_SHADER_ARB), createShader(frag, GL_FRAGMENT_SHADER_ARB));
     }
 
     public static void clear() {
         glUseProgramObjectARB(0);
     }
 
-    private int createShader(String filename, int shaderType) {
+    private void create(int vertShader, int fragShader) {
+        id = glCreateProgramObjectARB();
+        glAttachObjectARB(id, vertShader);
+        glAttachObjectARB(id, fragShader);
+        glLinkProgramARB(id);
+        glValidateProgramARB(id);
+    }
+
+    private int createShader(String text, int shaderType) {
         int shader = glCreateShaderObjectARB(shaderType);
-
-        glShaderSourceARB(shader, readFileAsString(filename));
+        glShaderSourceARB(shader, text);
         glCompileShaderARB(shader);
-
         if (glGetObjectParameteriARB(shader, GL_OBJECT_COMPILE_STATUS_ARB) == GL11.GL_FALSE) {
-            throw new RuntimeException("Error creating shader: " + filename + ", " + shader);
+            throw new RuntimeException("Error creating shader: " + shader + "\n" + text);
         }
-
         return shader;
     }
 
-    public void enable() {
-        glUseProgramObjectARB(program);
+    private void enable() {
+        glUseProgramObjectARB(id);
     }
 
-    private String readFileAsString(String filename) {
+    private static String fileToString(String filename) {
+        filename = "src/shaders/" + filename;
         StringBuilder source = new StringBuilder();
         try {
             FileInputStream in = new FileInputStream(filename);
@@ -69,37 +94,32 @@ public class Shader {
     }
 
     public void setFloat(String name, double val) {
-        if (glGetInteger(GL_CURRENT_PROGRAM) != program) {
-            throw new RuntimeException("Shader must be enabled");
-        }
-        glUniform1f(glGetUniformLocation(program, name), (float) val);
+        with(() -> glUniform1f(glGetUniformLocation(id, name), (float) val));
     }
 
     public void setInt(String name, int val) {
-        if (glGetInteger(GL_CURRENT_PROGRAM) != program) {
-            throw new RuntimeException("Shader must be enabled");
-        }
-        glUniform1i(glGetUniformLocation(program, name), val);
+        with(() -> glUniform1i(glGetUniformLocation(id, name), val));
     }
 
     public void setVec2(String name, FloatBuffer val) {
-        if (glGetInteger(GL_CURRENT_PROGRAM) != program) {
-            throw new RuntimeException("Shader must be enabled");
-        }
-        glUniform2(glGetUniformLocation(program, name), val);
+        with(() -> glUniform2(glGetUniformLocation(id, name), val));
     }
 
     public void setVec3(String name, FloatBuffer val) {
-        if (glGetInteger(GL_CURRENT_PROGRAM) != program) {
-            throw new RuntimeException("Shader must be enabled");
-        }
-        glUniform3(glGetUniformLocation(program, name), val);
+        with(() -> glUniform3(glGetUniformLocation(id, name), val));
     }
 
     public void setVec4(String name, FloatBuffer val) {
-        if (glGetInteger(GL_CURRENT_PROGRAM) != program) {
-            throw new RuntimeException("Shader must be enabled");
+        with(() -> glUniform4(glGetUniformLocation(id, name), val));
+    }
+
+    public void with(Runnable r) {
+        if (!SHADER_STACK.isEmpty() && SHADER_STACK.peek() == this) {
+            r.run();
+        } else {
+            pushShader(this);
+            r.run();
+            popShader();
         }
-        glUniform4(glGetUniformLocation(program, name), val);
     }
 }

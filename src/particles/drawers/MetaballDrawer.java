@@ -86,7 +86,7 @@ public class MetaballDrawer implements Drawer {
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
         Camera.calculateViewport(Window2D.aspectRatio());
 
-        metaball.enable();
+        Shader.pushShader(metaball);
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, colorTextureID);
         color.glColor();
@@ -101,6 +101,6 @@ public class MetaballDrawer implements Drawer {
         glTexCoord2d(1, 0);
         Window2D.LR().glVertex();
         glEnd();
-        Shader.clear();
+        Shader.popShader();
     }
 }

@@ -1,5 +1,6 @@
 package util;
 
+import java.nio.FloatBuffer;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Vec3 {
@@ -50,7 +51,7 @@ public class Vec3 {
         int q1 = v1.quadrantXY(this);
         int q2 = v2.quadrantXY(this);
         boolean con = q1 != q2 && q1 % 2 == q2 % 2;
-        
+
         q1 = v1.quadrantXZ(this);
         q2 = v2.quadrantXZ(this);
         con &= q1 != q2 && q1 % 2 == q2 % 2;
@@ -147,7 +148,7 @@ public class Vec3 {
             return 3;
         }
     }
-    
+
     public int quadrantYZ(Vec3 other) {
         if (other.y >= y) {
             if (other.z >= z) {
@@ -161,7 +162,7 @@ public class Vec3 {
             return 3;
         }
     }
-    
+
     public int quadrantXZ(Vec3 other) {
         if (other.x >= x) {
             if (other.z >= z) {
@@ -194,6 +195,10 @@ public class Vec3 {
 
     public Vec3 subtract(Vec3 other) {
         return new Vec3(x - other.x, y - other.y, z - other.z);
+    }
+
+    public FloatBuffer toFloatBuffer() {
+        return Util.floatBuffer(x, y, z);
     }
 
     public Vec3Polar toPolar() {

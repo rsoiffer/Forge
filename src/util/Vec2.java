@@ -1,5 +1,6 @@
 package util;
 
+import java.nio.FloatBuffer;
 import static org.lwjgl.opengl.GL11.glTexCoord2d;
 import static org.lwjgl.opengl.GL11.glVertex2d;
 
@@ -154,6 +155,10 @@ public class Vec2 {
 
     public Vec2 subtract(Vec2 other) {
         return new Vec2(x - other.x, y - other.y);
+    }
+
+    public FloatBuffer toFloatBuffer() {
+        return Util.floatBuffer(x, y);
     }
 
     @Override

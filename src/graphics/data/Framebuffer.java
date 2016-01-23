@@ -1,48 +1,78 @@
 package graphics.data;
 
 import engine.Core;
-import engine.Signal;
 import graphics.Camera;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Stack;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.EXTFramebufferObject.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.GL_DEPTH_COMPONENT24;
+import static org.lwjgl.opengl.GL30.*;
 import static util.Color4.WHITE;
 import util.Pair;
 import util.Vec2;
 
 public class Framebuffer {
 
-    private int framebufferID;
-    private int colorTextureID;
-    private int depthRenderBufferID;
+    //Stack
+    private static final Stack<Framebuffer> FRAMEBUFFER_STACK = new Stack();
 
-    public Framebuffer() {
-        framebufferID = glGenFramebuffersEXT();
-        colorTextureID = glGenTextures();
-        depthRenderBufferID = glGenRenderbuffersEXT();
-
-        displaySize().doForEach(this::reset);
+    public static void popFramebuffer() {
+        FRAMEBUFFER_STACK.pop().disable();
+        if (FRAMEBUFFER_STACK.isEmpty()) {
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        } else {
+            FRAMEBUFFER_STACK.peek().enable();
+        }
     }
 
-    public void bindTexture() {
-        glBindTexture(GL_TEXTURE_2D, colorTextureID);
+    public static void pushFramebuffer(Framebuffer fb) {
+        if (!FRAMEBUFFER_STACK.isEmpty()) {
+            FRAMEBUFFER_STACK.peek().disable();
+        }
+        FRAMEBUFFER_STACK.push(fb);
+        fb.enable();
     }
 
-    public static void clear() {
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    //Framebuffers
+    private int id;
+    private final List<FramebufferAttachment> attachments;
+
+    public Framebuffer(FramebufferAttachment... as) {
+        attachments = new LinkedList((Arrays.asList(as)));
+
+        id = glGenFramebuffers();
+        Core.render.toSignal(() -> new Pair(Display.getWidth(), Display.getHeight())).distinct().doForEach(p -> {
+            pushFramebuffer(this);
+            attachments.forEach(a -> a.create(p));
+            popFramebuffer();
+        });
     }
 
-    public static Signal<Pair> displaySize() {
-        return Core.render.toSignal(() -> new Pair(Display.getWidth(), Display.getHeight())).distinct();
+    public void destroy() {
+        glDeleteFramebuffers(id);
+        attachments.forEach(FramebufferAttachment::destroy);
     }
 
-    public void draw() {
+    private void disable() {
+        attachments.forEach(FramebufferAttachment::disable);
+    }
+
+    private void enable() {
+        glBindFramebuffer(GL_FRAMEBUFFER, id);
+        attachments.forEach(FramebufferAttachment::enable);
+    }
+
+    public void render() {
         Camera.calculateViewport((double) Display.getWidth() / Display.getHeight());
         Camera.setProjection2D(new Vec2(0), new Vec2(1));
 
-        bindTexture();
+        attachments.forEach(FramebufferAttachment::preRender);
+
         WHITE.glColor();
         glEnable(GL_TEXTURE_2D);
         glBegin(GL_QUADS);
@@ -55,25 +85,94 @@ public class Framebuffer {
         new Vec2(0, 1).glTexCoord();
         new Vec2(0, 1).glVertex();
         glEnd();
+
+        attachments.forEach(FramebufferAttachment::postRender);
     }
 
-    public void enable() {
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebufferID);
+    //Attachments
+    public static interface FramebufferAttachment {
+
+        public void create(Pair size);
+
+        public default void destroy() {
+        }
+
+        public default void disable() {
+        }
+
+        public default void enable() {
+        }
+
+        public default void postRender() {
+        }
+
+        public default void preRender() {
+        }
     }
 
-    public void reset(Pair size) {
-        enable();
+    public static class DepthAttachment implements FramebufferAttachment {
 
-        glBindTexture(GL_TEXTURE_2D, colorTextureID);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, size.x, size.y, 0, GL_RGBA, GL_INT, (ByteBuffer) null);
-        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, colorTextureID, 0);
+        private int id;
 
-        glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depthRenderBufferID);
-        glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, size.x, size.y);
-        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, depthRenderBufferID);
+        @Override
+        public void create(Pair size) {
+            id = glGenRenderbuffersEXT();
+            glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, id);
+            glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, size.x, size.y);
+            glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
+            glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, id);
+        }
+    }
 
-        clear();
+    public static class HDRTextureAttachment implements FramebufferAttachment {
+
+        private int id;
+
+        @Override
+        public void create(Pair size) {
+            id = glGenTextures();
+            glBindTexture(GL_TEXTURE_2D, id);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, size.x, size.y, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, id, 0);
+        }
+
+        @Override
+        public void postRender() {
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+
+        @Override
+        public void preRender() {
+            glBindTexture(GL_TEXTURE_2D, id);
+        }
+    }
+
+    public static class TextureAttachment implements FramebufferAttachment {
+
+        private int id;
+
+        @Override
+        public void create(Pair size) {
+            id = glGenTextures();
+            glBindTexture(GL_TEXTURE_2D, id);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, size.x, size.y, 0, GL_RGBA, GL_INT, (ByteBuffer) null);
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, id, 0);
+        }
+
+        @Override
+        public void postRender() {
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+
+        @Override
+        public void preRender() {
+            glBindTexture(GL_TEXTURE_2D, id);
+        }
     }
 }
