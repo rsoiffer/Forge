@@ -93,6 +93,10 @@ public class Shader {
         return source.toString();
     }
 
+    public void setBoolean(String name, boolean val) {
+        setInt(name, val ? 1 : 0);
+    }
+
     public void setFloat(String name, double val) {
         with(() -> glUniform1f(glGetUniformLocation(id, name), (float) val));
     }

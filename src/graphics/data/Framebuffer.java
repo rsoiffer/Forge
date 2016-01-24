@@ -7,11 +7,16 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+import static org.lwjgl.opengl.ARBColorBufferFloat.GL_CLAMP_FRAGMENT_COLOR_ARB;
+import static org.lwjgl.opengl.ARBColorBufferFloat.GL_CLAMP_READ_COLOR_ARB;
+import static org.lwjgl.opengl.ARBColorBufferFloat.GL_CLAMP_VERTEX_COLOR_ARB;
+import static org.lwjgl.opengl.ARBColorBufferFloat.glClampColorARB;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.EXTFramebufferObject.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.GL_DEPTH_COMPONENT24;
 import static org.lwjgl.opengl.GL30.*;
+import util.Color4;
 import static util.Color4.WHITE;
 import util.Pair;
 import util.Vec2;
@@ -53,6 +58,13 @@ public class Framebuffer {
         });
     }
 
+    public void clear(Color4 color) {
+        with(() -> {
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            color.glClearColor();
+        });
+    }
+
     public void destroy() {
         glDeleteFramebuffers(id);
         attachments.forEach(FramebufferAttachment::destroy);
@@ -87,6 +99,16 @@ public class Framebuffer {
         glEnd();
 
         attachments.forEach(FramebufferAttachment::postRender);
+    }
+
+    public void with(Runnable r) {
+        if (!FRAMEBUFFER_STACK.isEmpty() && FRAMEBUFFER_STACK.peek() == this) {
+            r.run();
+        } else {
+            pushFramebuffer(this);
+            r.run();
+            popFramebuffer();
+        }
     }
 
     //Attachments
@@ -130,6 +152,10 @@ public class Framebuffer {
 
         @Override
         public void create(Pair size) {
+            glClampColorARB(GL_CLAMP_VERTEX_COLOR_ARB, GL_FALSE);
+            glClampColorARB(GL_CLAMP_READ_COLOR_ARB, GL_FALSE);
+            glClampColorARB(GL_CLAMP_FRAGMENT_COLOR_ARB, GL_FALSE);
+
             id = glGenTextures();
             glBindTexture(GL_TEXTURE_2D, id);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
