@@ -7,10 +7,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
-import static org.lwjgl.opengl.ARBColorBufferFloat.GL_CLAMP_FRAGMENT_COLOR_ARB;
-import static org.lwjgl.opengl.ARBColorBufferFloat.GL_CLAMP_READ_COLOR_ARB;
-import static org.lwjgl.opengl.ARBColorBufferFloat.GL_CLAMP_VERTEX_COLOR_ARB;
-import static org.lwjgl.opengl.ARBColorBufferFloat.glClampColorARB;
+import static org.lwjgl.opengl.ARBColorBufferFloat.*;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.EXTFramebufferObject.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -47,15 +44,19 @@ public class Framebuffer {
     private int id;
     private final List<FramebufferAttachment> attachments;
 
-    public Framebuffer(FramebufferAttachment... as) {
+    public Framebuffer(Vec2 scale, FramebufferAttachment... as) {
         attachments = new LinkedList((Arrays.asList(as)));
 
         id = glGenFramebuffers();
-        Core.render.toSignal(() -> new Pair(Display.getWidth(), Display.getHeight())).distinct().doForEach(p -> {
+        Core.render.toSignal(() -> new Pair((int) (Display.getWidth() * scale.x), (int) (Display.getHeight() * scale.y))).distinct().doForEach(p -> {
             pushFramebuffer(this);
             attachments.forEach(a -> a.create(p));
             popFramebuffer();
         });
+    }
+
+    public Framebuffer(FramebufferAttachment... as) {
+        this(new Vec2(1), as);
     }
 
     public void clear(Color4 color) {

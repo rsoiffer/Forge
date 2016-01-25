@@ -65,7 +65,7 @@ public class Shader {
         glShaderSourceARB(shader, text);
         glCompileShaderARB(shader);
         if (glGetObjectParameteriARB(shader, GL_OBJECT_COMPILE_STATUS_ARB) == GL11.GL_FALSE) {
-            throw new RuntimeException("Error creating shader: " + shader + "\n" + text);
+            throw new RuntimeException("Error creating shader: " + shader + "\n" + glGetShaderInfoLog(shader, glGetShaderi(shader, GL_INFO_LOG_LENGTH)) + "\n" + text);
         }
         return shader;
     }
