@@ -11,6 +11,7 @@ import static org.lwjgl.opengl.ARBVertexShader.GL_VERTEX_SHADER_ARB;
 import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL20.*;
 import util.Log;
+import util.Util;
 
 public class Shader {
 
@@ -91,6 +92,25 @@ public class Shader {
             Log.error("Could not read file " + filename + ": " + e);
         }
         return source.toString();
+    }
+
+    public void set(String name, double... vals) {
+        switch (vals.length) {
+            case 1:
+                setFloat(name, vals[0]);
+                break;
+            case 2:
+                setVec2(name, Util.floatBuffer(vals));
+                break;
+            case 3:
+                setVec3(name, Util.floatBuffer(vals));
+                break;
+            case 4:
+                setVec4(name, Util.floatBuffer(vals));
+                break;
+            default:
+                throw new RuntimeException("Illegal number of arguments");
+        }
     }
 
     public void setBoolean(String name, boolean val) {

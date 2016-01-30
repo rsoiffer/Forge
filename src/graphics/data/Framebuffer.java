@@ -80,11 +80,19 @@ public class Framebuffer {
         attachments.forEach(FramebufferAttachment::enable);
     }
 
+    public void postRender() {
+        attachments.forEach(FramebufferAttachment::postRender);
+    }
+
+    public void preRender() {
+        attachments.forEach(FramebufferAttachment::preRender);
+    }
+
     public void render() {
         Camera.calculateViewport((double) Display.getWidth() / Display.getHeight());
         Camera.setProjection2D(new Vec2(0), new Vec2(1));
 
-        attachments.forEach(FramebufferAttachment::preRender);
+        preRender();
 
         WHITE.glColor();
         glEnable(GL_TEXTURE_2D);
@@ -99,7 +107,7 @@ public class Framebuffer {
         new Vec2(0, 1).glVertex();
         glEnd();
 
-        attachments.forEach(FramebufferAttachment::postRender);
+        postRender();
     }
 
     public void with(Runnable r) {
