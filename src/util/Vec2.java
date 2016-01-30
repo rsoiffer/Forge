@@ -8,6 +8,7 @@ public class Vec2 {
 
     public static final Vec2 ZERO = new Vec2(0);
 
+    public static double tol = 1E-14;
     public final double x;
     public final double y;
 
@@ -70,7 +71,7 @@ public class Vec2 {
     public boolean equals(Object o) {
         if (o instanceof Vec2) {
             Vec2 v = (Vec2) o;
-            return x == v.x && y == v.y;
+            return (x - v.x) <= tol && (y - v.y) <= tol;
         }
         return false;
     }
