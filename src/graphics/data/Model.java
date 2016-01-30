@@ -21,30 +21,31 @@ public class Model {
     private int objectlist;
     private int polyCount = 0;
 
-    //// Statisitcs for drawing ////
-    public double toppoint = 0;		// y+
-    public double bottompoint = 0;	// y-
-    public double leftpoint = 0;		// x-
-    public double rightpoint = 0;	// x+
-    public double farpoint = 0;		// z-
-    public double nearpoint = 0;		// z+
+    private Vec3 topCorner, bottomCorner;
 
+//    //// Statisitcs for drawing ////
+//    public double toppoint = 0;		// y+
+//    public double bottompoint = 0;	// y-
+//    public double leftpoint = 0;		// x-
+//    public double rightpoint = 0;	// x+
+//    public double farpoint = 0;		// z-
+//    public double nearpoint = 0;		// z+
     public Model(String name) {
         try {
             loadobject(new BufferedReader(new FileReader(name)));
-            translate(new Vec3(0, 0, -farpoint));
+            //translate(new Vec3(0, 0, -bottomCorner.z));
             opengldrawtolist();
             polyCount = faces.size();
             cleanup();
         } catch (FileNotFoundException ex) {
             System.out.println("Could not load model: " + name);
         }
-        for (int i = 0; i < vertices.size(); i++) {
-            int ocr = 0;
-            for (int j = 0; i < faces.size(); j++) {
-
-            }
-        }
+//        for (int i = 0; i < vertices.size(); i++) {
+//            int ocr = 0;
+//            for (int j = 0; i < faces.size(); j++) {
+//
+//            }
+//        }
     }
 
     private void cleanup() {
@@ -63,47 +64,25 @@ public class Model {
             String newline;
             boolean firstpass = true;
 
-            while (((newline = br.readLine()) != null)) {
+            while ((newline = br.readLine()) != null) {
                 linecounter++;
                 newline = newline.trim();
                 if (newline.length() > 0) {
                     if (newline.charAt(0) == 'v' && newline.charAt(1) == ' ') {
                         String[] coordstext = newline.split("\\s+");
                         Vec3 coords = new Vec3(Double.valueOf(coordstext[3]), Double.valueOf(coordstext[1]), Double.valueOf(coordstext[2]));
-                        //// check for farpoints ////
-                        if (firstpass) {
-                            rightpoint = coords.x;
-                            leftpoint = coords.x;
-                            toppoint = coords.y;
-                            bottompoint = coords.y;
-                            nearpoint = coords.z;
-                            farpoint = coords.z;
-                            firstpass = false;
-                        }
-                        if (coords.x > rightpoint) {
-                            rightpoint = coords.x;
-                        }
-                        if (coords.x < leftpoint) {
-                            leftpoint = coords.x;
-                        }
-                        if (coords.y > toppoint) {
-                            toppoint = coords.y;
-                        }
-                        if (coords.y < bottompoint) {
-                            bottompoint = coords.y;
-                        }
-                        if (coords.z > nearpoint) {
-                            nearpoint = coords.z;
-                        }
-                        if (coords.z < farpoint) {
-                            farpoint = coords.z;
-                        }
-                        /////////////////////////////
                         vertices.add(coords);
+                        if (firstpass) {
+                            topCorner = bottomCorner = coords;
+                            firstpass = false;
+                        } else {
+                            topCorner = topCorner.perComponent(coords, Math::max);
+                            bottomCorner = bottomCorner.perComponent(coords, Math::min);
+                        }
                     }
                     if (newline.charAt(0) == 'v' && newline.charAt(1) == 't') {
                         String[] coordstext = newline.split("\\s+");
-                        Vec2 coords = new Vec2(Double.valueOf(coordstext[1]), Double.valueOf(coordstext[2]));
+                        Vec2 coords = new Vec2(Double.valueOf(coordstext[1]), 1 - Double.valueOf(coordstext[2]));
                         vertexTex.add(coords);
                     }
                     if (newline.charAt(0) == 'v' && newline.charAt(1) == 'n') {

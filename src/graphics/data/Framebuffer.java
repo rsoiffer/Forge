@@ -17,7 +17,7 @@ import util.Color4;
 import static util.Color4.WHITE;
 import util.Pair;
 import util.Vec2;
-
+ 
 public class Framebuffer {
 
     //Stack
@@ -26,7 +26,7 @@ public class Framebuffer {
     public static void popFramebuffer() {
         FRAMEBUFFER_STACK.pop().disable();
         if (FRAMEBUFFER_STACK.isEmpty()) {
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glBindFramebufferEXT(GL_FRAMEBUFFER, 0);
         } else {
             FRAMEBUFFER_STACK.peek().enable();
         }
@@ -47,8 +47,8 @@ public class Framebuffer {
     public Framebuffer(Vec2 scale, FramebufferAttachment... as) {
         attachments = new LinkedList((Arrays.asList(as)));
 
-        id = glGenFramebuffers();
-        Core.render.toSignal(() -> new Pair((int) (Display.getWidth() * scale.x), (int) (Display.getHeight() * scale.y))).distinct().doForEach(p -> {
+        id = glGenFramebuffersEXT();
+        Core.render.map(() -> new Pair((int) (Display.getWidth() * scale.x), (int) (Display.getHeight() * scale.y))).distinct().doForEach(p -> {
             pushFramebuffer(this);
             attachments.forEach(a -> a.create(p));
             popFramebuffer();
@@ -67,7 +67,7 @@ public class Framebuffer {
     }
 
     public void destroy() {
-        glDeleteFramebuffers(id);
+        glDeleteFramebuffersEXT(id);
         attachments.forEach(FramebufferAttachment::destroy);
     }
 
@@ -76,23 +76,15 @@ public class Framebuffer {
     }
 
     private void enable() {
-        glBindFramebuffer(GL_FRAMEBUFFER, id);
+        glBindFramebufferEXT(GL_FRAMEBUFFER, id);
         attachments.forEach(FramebufferAttachment::enable);
-    }
-
-    public void postRender() {
-        attachments.forEach(FramebufferAttachment::postRender);
-    }
-
-    public void preRender() {
-        attachments.forEach(FramebufferAttachment::preRender);
     }
 
     public void render() {
         Camera.calculateViewport((double) Display.getWidth() / Display.getHeight());
         Camera.setProjection2D(new Vec2(0), new Vec2(1));
 
-        preRender();
+        attachments.forEach(FramebufferAttachment::preRender);
 
         WHITE.glColor();
         glEnable(GL_TEXTURE_2D);
@@ -107,7 +99,7 @@ public class Framebuffer {
         new Vec2(0, 1).glVertex();
         glEnd();
 
-        postRender();
+        attachments.forEach(FramebufferAttachment::postRender);
     }
 
     public void with(Runnable r) {

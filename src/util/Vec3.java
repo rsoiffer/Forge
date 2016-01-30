@@ -1,13 +1,15 @@
+
 package util;
 
 import java.nio.FloatBuffer;
+import java.util.function.BinaryOperator;
+import java.util.function.UnaryOperator;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Vec3 {
 
     public static final Vec3 ZERO = new Vec3(0);
 
-    public static double tol = 1E-14;
     public final double x;
     public final double y;
     public final double z;
@@ -87,7 +89,7 @@ public class Vec3 {
     public boolean equals(Object o) {
         if (o instanceof Vec3) {
             Vec3 v = (Vec3) o;
-            return (x - v.x) <= tol && (y - v.y) <= tol && (z - v.z) <= tol;
+            return x == v.x && y == v.y && z == v.z;
         }
         return false;
     }
@@ -134,6 +136,14 @@ public class Vec3 {
             return new Vec3(1, 0, 0);
         }
         return multiply(1 / len);
+    }
+
+    public Vec3 perComponent(UnaryOperator<Double> u) {
+        return new Vec3(u.apply(x), u.apply(y), u.apply(z));
+    }
+
+    public Vec3 perComponent(Vec3 other, BinaryOperator<Double> u) {
+        return new Vec3(u.apply(x, other.x), u.apply(y, other.y), u.apply(z, other.z));
     }
 
     public int quadrantXY(Vec3 other) {

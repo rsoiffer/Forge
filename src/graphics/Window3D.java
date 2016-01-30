@@ -7,7 +7,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT;
 import static org.lwjgl.opengl.GL11.*;
-import org.lwjgl.opengl.PixelFormat;
 import util.Color4;
 import static util.Color4.BLACK;
 import util.Vec2;
@@ -38,7 +37,7 @@ public abstract class Window3D {
             //Display.setVSyncEnabled(true);
             Display.setResizable(true);
             Display.setTitle(title);
-            Display.create(new PixelFormat(8, 8, 0, 8));
+            Display.create();//new PixelFormat(8, 8, 0, 8));
             //OpenGL Init
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

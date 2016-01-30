@@ -1,9 +1,11 @@
 package graphics.data;
 
 import graphics.loading.ModelContainer;
+import graphics.loading.SpriteContainer;
 import java.util.ArrayList;
 import static org.lwjgl.opengl.GL11.*;
 import util.Color4;
+import static util.Color4.WHITE;
 import util.Vec3;
 
 public class Animation {
@@ -31,6 +33,11 @@ public class Animation {
         visible = true;
         this.scale = scale;
         this.color = color;
+    }
+
+    public Animation(String name, String tex) {
+        this(name, new Vec3(1), WHITE);
+        this.tex = SpriteContainer.loadSprite(tex);
     }
 
     public boolean animComplete() {

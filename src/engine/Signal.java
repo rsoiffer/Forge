@@ -61,7 +61,7 @@ public class Signal<T> extends EventStream implements Supplier<T> {
     }
 
     public <R, S> Signal<S> combineLatest(Signal<R> other, BiFunction<T, R, S> b) {
-        return combineEventStreams(other).toSignal(() -> b.apply(get(), other.get()));
+        return combineEventStreams(other).map(() -> b.apply(get(), other.get()));
     }
 
     public Signal<T> debounce(double interval) {
@@ -99,26 +99,15 @@ public class Signal<T> extends EventStream implements Supplier<T> {
     }
 
     public Signal<T> filter(Predicate<T> p) {
-        return filterElse(p, s -> {
-        });
-    }
-
-    public Signal<T> filterElse(Signal<Boolean> s, Consumer<Signal<T>> c) {
-        return s.addChild(filterElse(t -> s.get(), c));
-    }
-
-    public Signal<T> filterElse(Predicate<T> p, Consumer<Signal<T>> c) {
         return with(new Signal(p.test(get()) ? get() : null), s -> {
             if (p.test(get())) {
                 s.set(get());
-            } else {
-                c.accept(s);
             }
         });
     }
 
     public Signal<T> first(int n) {
-        return filterElse(count().map(i -> i <= n), Signal::destroy);
+        return until(count().map(i -> i <= n));
     }
 
     public Signal<T> forEach(Consumer<T> c) {
@@ -129,7 +118,7 @@ public class Signal<T> extends EventStream implements Supplier<T> {
     }
 
     public <R> Signal<R> map(Function<T, R> f) {
-        return toSignal(() -> f.apply(get()));
+        return map(() -> f.apply(get()));
     }
 
     public <R> Signal<R> ofType(Class<R> c) {
@@ -146,5 +135,19 @@ public class Signal<T> extends EventStream implements Supplier<T> {
 
     public <R> Signal<R> reduce(R r, BiFunction<T, R, R> f) {
         return with(new Signal<>(r), s -> s.edit(v -> f.apply(get(), v)));
+    }
+
+    public Signal<T> until(Signal<Boolean> s) {
+        return until(t -> s.get());
+    }
+
+    public Signal<T> until(Predicate<T> p) {
+        return with(new Signal(p.test(get()) ? get() : null), s -> {
+            if (p.test(get())) {
+                s.set(get());
+            } else {
+                s.destroy();
+            }
+        });
     }
 }

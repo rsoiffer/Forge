@@ -30,10 +30,6 @@ public class EventStream extends Destructible {
         toRun.forEach(Runnable::run);
     }
 
-    public <R> Signal<R> toSignal(Supplier<R> r) {
-        return with(new Signal(r.get()), s -> s.set(r.get()));
-    }
-
     public <R> Signal<R> toSignal(Signal<R> r) {
         return r.addChild(with(new Signal(r.get()), s -> s.set(r.get())));
     }
@@ -68,23 +64,16 @@ public class EventStream extends Destructible {
         return throttle(interval).with(count(), s -> s.set(0));
     }
 
-    public EventStream filter_E(Signal<Boolean> p) {
-        return filterElse_E(p, s -> {
-        });
-    }
-
-    public EventStream filterElse_E(Signal<Boolean> p, Consumer<EventStream> c) {
+    public EventStream filter(Supplier<Boolean> p) {
         return with(new EventStream(), s -> {
             if (p.get()) {
                 s.sendEvent();
-            } else {
-                c.accept(s);
             }
         });
     }
 
-    public EventStream first_E(int n) {
-        return filterElse_E(count().map(i -> i <= n), EventStream::destroy);
+    public EventStream first(int n) {
+        return until(count().map(i -> i <= n));
     }
 
     public EventStream limit(double interval) {
@@ -93,6 +82,10 @@ public class EventStream extends Destructible {
                 t.set(0.);
             }
         }).map(t -> t > interval).distinct().filter(b -> !b);
+    }
+
+    public <R> Signal<R> map(Supplier<R> r) {
+        return with(new Signal(r.get()), s -> s.set(r.get()));
     }
 
     public EventStream onEvent(Runnable r) {
@@ -112,5 +105,15 @@ public class EventStream extends Destructible {
 
     public EventStream toEventStream() {
         return with(new EventStream(), EventStream::sendEvent);
+    }
+
+    public EventStream until(Supplier<Boolean> p) {
+        return with(new EventStream(), e -> {
+            if (p.get()) {
+                e.sendEvent();
+            } else {
+                e.destroy();
+            }
+        });
     }
 }

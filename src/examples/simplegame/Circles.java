@@ -63,7 +63,7 @@ public class Circles {
                 newCircle.run();
             }
         });
-        Core.interval(.1).filter_E(Input.mouseSignal(0)).onEvent(newCircle);
+        Core.interval(.1).filter(Input.mouseSignal(0)).onEvent(newCircle);
 
         Core.run();
     }
