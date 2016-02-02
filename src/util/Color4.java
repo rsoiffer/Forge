@@ -10,6 +10,9 @@ public class Color4 {
     public final static Color4 RED = new Color4(1, 0, 0, 1);
     public final static Color4 GREEN = new Color4(0, 1, 0, 1);
     public final static Color4 BLUE = new Color4(0, 0, 1, 1);
+    public final static Color4 PURPLE = new Color4(1, 0, 1, 1);
+    public final static Color4 YELLOW = new Color4(1, 1, 0, 1);
+    public final static Color4 ORANGE = new Color4(1, 0.5, 0, 1);
     public final static Color4 TRANSPARENT = new Color4(0, 0, 0, 0);
     public final double r;
     public final double g;
