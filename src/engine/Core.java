@@ -19,6 +19,10 @@ public abstract class Core {
     public static double timeMult = 1;
     public static double timeCap = .1;
     public static double timeMin = .01;
+    
+    public static int screenWidth = 1200;
+    public static int screenHeight = 800;
+    public static String title = "So how are you today?";
 
     public static boolean is3D;
     public static boolean running;
@@ -27,9 +31,9 @@ public abstract class Core {
         running = true;
         System.setProperty("org.lwjgl.librarypath", new File("natives").getAbsolutePath());
         if (!is3D) {
-            Window2D.initialize(1200, 800, "So how are you today?");
+            Window2D.initialize(screenWidth, screenHeight, title);
         } else {
-            Window3D.initialize(1200, 800, "So how are you today?");
+            Window3D.initialize(screenWidth, screenHeight, title);
         }
         FontContainer.init();
     }
