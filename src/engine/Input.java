@@ -103,12 +103,12 @@ public class Input {
         return mouseSignal(button).filter(x -> x == val);
     }
 
-    @deprecated
+    @Deprecated
     public static Signal<Double> whileKeyDown(int key) {
         return Core.update.filter(keySignal(key));
     }
     
-    @deprecated
+    @Deprecated
     public static Signal<Double> whileMouseDown(int mouse) {
         return Core.update.filter(mouseSignal(mouse));
     }
