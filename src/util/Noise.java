@@ -32,7 +32,7 @@ public class Noise {
         return r;
     }
 
-    private double perlin(double x, double y) {
+    public double perlin(double x, double y) {
         return SimplexNoise.noise(x, y, seed);
     }
 
