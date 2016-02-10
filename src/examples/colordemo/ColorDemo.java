@@ -1,5 +1,6 @@
 package examples.colordemo;
 
+import examples.Premade2D;
 import engine.AbstractEntity.LAE;
 import engine.Core;
 import engine.Input;
@@ -31,7 +32,7 @@ public class ColorDemo {
             Signal<Vec2> position = Premade2D.makePosition(hero);
             Signal<Vec2> velocity = Premade2D.makeVelocity(hero);
             Premade2D.makeGravity(hero, new Vec2(0, -1000));
-            Signal<Sprite> sprite = Premade2D.makeSpriteGraphics(hero, "hero");
+            Signal<Sprite> sprite = Premade2D.makeSpriteGraphics(hero, "rock");
 
             //Set initial position
             position.set(new Vec2(0, 500));
@@ -57,12 +58,18 @@ public class ColorDemo {
                 //Collisions with the floor (temporary, will change later)
                 if (position.get().y < 0) {
                     position.edit(v -> v.withY(0));
-                    velocity.edit(v -> v.withY(0));
-
+                    if(velocity.get().y>-200) velocity.edit(v -> v.withY(0));
+                    else velocity.edit(v -> v.withY(velocity.get().y*-2/3));
                     //Jumping
                     if (Input.keySignal(Keyboard.KEY_SPACE).get()) {
                         velocity.edit(v -> v.withY(500));
                     }
+                }
+                
+                //Collisions with window
+                if(position.get().x < -600 || position.get().x > 600){
+                    position.edit(v -> v.withX(position.get().x-velocity.get().x*dt));
+                    velocity.edit(v -> v.withX(0));
                 }
             });
         }).create();

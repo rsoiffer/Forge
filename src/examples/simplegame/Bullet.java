@@ -1,5 +1,6 @@
 package examples.simplegame;
 
+import examples.Premade2D;
 import engine.AbstractEntity;
 import engine.Core;
 import engine.Signal;

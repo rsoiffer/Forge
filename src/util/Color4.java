@@ -46,6 +46,10 @@ public class Color4 {
         return new Color4(d, d, d);
     }
 
+    public Color4 multiply(double d) {
+        return new Color4(r * d, g * d, b * d, a);
+    }
+
     public FloatBuffer toFloatBuffer() {
         return Util.floatBuffer(r, g, b, a);
     }

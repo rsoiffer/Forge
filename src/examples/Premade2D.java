@@ -1,4 +1,4 @@
-package examples.simplegame;
+package examples;
 
 import engine.AbstractEntity;
 import engine.Core;
@@ -28,6 +28,11 @@ public abstract class Premade2D {
         return e.addChild(Core.update.collect(ZERO, (v, dt) -> position.edit(v.multiply(dt)::add)), "velocity");
     }
 
+    public static Signal<Vec2> makeGravity(AbstractEntity e, Vec2 g) {
+        Signal<Vec2> velocity = e.get("velocity", Vec2.class);
+        return e.addChild(Core.update.collect(g, (v, dt) -> velocity.edit(v.multiply(dt)::add)), "gravity");
+    }
+
     public static void makeWASDMovement(AbstractEntity e, double speed) {
         Signal<Vec2> velocity = e.get("velocity", Vec2.class);
         e.onUpdate(dt -> velocity.set(ZERO));
@@ -40,7 +45,12 @@ public abstract class Premade2D {
     //Graphics
     public static void makeCircleGraphics(AbstractEntity e, double size, Color4 color) {
         Signal<Vec2> position = e.get("position", Vec2.class);
-        e.onRender(() -> Graphics2D.fillEllipse(position.get(), new Vec2(size, size), color, 20));
+        e.onRender(() -> Graphics2D.fillEllipse(position.get(), new Vec2(size), color, 20));
+    }
+
+    public static void makeCircleGraphics(AbstractEntity e, Supplier<Double> size, Supplier<Color4> color) {
+        Signal<Vec2> position = e.get("position", Vec2.class);
+        e.onRender(() -> Graphics2D.fillEllipse(position.get(), new Vec2(size.get()), color.get(), 20));
     }
 
     public static Signal<Sprite> makeSpriteGraphics(AbstractEntity e, String name) {
