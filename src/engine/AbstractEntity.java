@@ -26,6 +26,14 @@ public abstract class AbstractEntity extends Destructible {
         return new LAE(create);
     }
 
+    public Destructible get(String name) {
+        Destructible r = components.get(name);
+        if (r == null) {
+            throw new RuntimeException("Missing component " + name);
+        }
+        return r;
+    }
+
     public <R> Signal<R> get(String name, Class<R> c) {
         Destructible r = components.get(name);
         if (r == null) {

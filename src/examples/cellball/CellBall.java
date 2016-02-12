@@ -2,16 +2,18 @@ package examples.cellball;
 
 import engine.AbstractEntity.LAE;
 import engine.Core;
+import engine.EventStream;
 import engine.Input;
 import engine.Signal;
 import examples.Premade2D;
 import graphics.Graphics2D;
 import graphics.Window2D;
 import static java.util.Comparator.comparingDouble;
+import java.util.Optional;
+import java.util.function.Supplier;
+import org.lwjgl.opengl.Display;
 import util.Color4;
-import static util.Color4.BLACK;
-import static util.Color4.GREEN;
-import static util.Color4.RED;
+import static util.Color4.*;
 import util.RegisteredEntity;
 import util.Vec2;
 
@@ -20,6 +22,8 @@ public class CellBall {
     public static void main(String[] args) {
         Core.init();
         Window2D.background = BLACK;
+
+        Core.render.bufferCount(Core.interval(1)).forEach(i -> Display.setTitle("FPS: " + i));
 
         Input.whenMouse(0, true).onEvent(() -> {
             Protein p = new Protein(true);
@@ -43,12 +47,12 @@ public class CellBall {
                         .filter(p -> p.grow == grow)
                         .min(comparingDouble(p -> p.get("position", Vec2.class).get().subtract(position.get()).length())).ifPresent(p -> {
                     Vec2 to = p.get("position", Vec2.class).get().subtract(position.get());
-                    if (to.length() < 100) {
-                        velocity.edit(to.withLength(50)::add);
+                    if (to.length() < 200) {
+                        velocity.edit(to.withLength(20)::add);
                     }
                     if (to.length() < 20) {
                         sig.destroy();
-                        p.get("active", Boolean.class).set(true);
+                        ((EventStream) p.get("notify")).sendEvent();
                     }
                 }));
 
@@ -70,27 +74,25 @@ public class CellBall {
         @Override
         protected void createInner() {
             Signal<Vec2> position = Premade2D.makePosition(this);
-            Signal<Double> active = addChild(Core.time(), "active");
-            Signal<Color4> color = addChild(active.map(x -> (grow ? GREEN : RED).multiply(1 - Math.min(x, .5))), "color");
 
-            onRender(() -> RegisteredEntity.getAll(Protein.class).stream()
+            Signal<Double> fade = Core.update.reduce(.5, (dt, t) -> Math.min(t + dt, .5));
+            Signal<Color4> color = addChild(fade.map(x -> (grow ? GREEN : RED).multiply(1 - x)), "color");
+            EventStream notify = addChild(new EventStream(), "notify");
+            notify.onEvent(() -> fade.set(0.));
+
+            Supplier<Optional<Protein>> to = () -> RegisteredEntity.getAll(Protein.class).stream()
                     .filter(p -> p != this && p.grow == grow)
-                    .map(p -> p.get("position", Vec2.class).get())
-                    .filter(v -> v.x > position.get().x && v.subtract(position.get()).length() < 200)
-                    .forEach(v -> Graphics2D.drawLine(v, position.get(), Color4.gray(.5), 2)));
+                    .filter(p -> p.get("position", Vec2.class).get().x > position.get().x
+                            && p.get("position", Vec2.class).get().subtract(position.get()).length() < 200)
+                    .min(comparingDouble(p -> p.get("position", Vec2.class).get().subtract(position.get()).lengthSquared()));
 
-            add(Core.renderLayer(1).onEvent(() -> Graphics2D.fillEllipse(position.get(), new Vec2(20), color.get(), 20)));
-            
-            active.filter(x -> x < .5).onEvent(() -> {
-                RegisteredEntity.getAll(Protein.class).stream()
-                        .filter(p -> p != this && p.grow == grow)
-                        .filter(p -> p.get("position", Vec2.class).get().x > position.get().x
-                                && p.get("position", Vec2.class).get().subtract(position.get()).length() < 200)
-                        .forEach(p -> {
-                            p.get("active", Boolean.class).set(true);
-                        });
-                Core.timer(1, () -> active.set(false));
-            });
+            onRender(() -> to.get().ifPresent(p -> Graphics2D.drawLine(p.get("position", Vec2.class).get(), position.get(), Color4.gray(.5), 2)));
+
+            EventStream circleGraphics = Core.renderLayer(1).onEvent(() -> Graphics2D.fillEllipse(position.get(), new Vec2(20), color.get(), 20));
+
+            EventStream notifyOthers = Core.delay(.1, notify).onEvent(() -> to.get().map(p -> (EventStream) p.get("notify")).ifPresent(EventStream::sendEvent));
+
+            add(fade, color, notify, circleGraphics, notifyOthers);
         }
     }
 }
