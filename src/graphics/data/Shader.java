@@ -1,8 +1,5 @@
 package graphics.data;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
 import java.util.Stack;
 import static org.lwjgl.opengl.ARBFragmentShader.GL_FRAGMENT_SHADER_ARB;
@@ -10,7 +7,6 @@ import static org.lwjgl.opengl.ARBShaderObjects.*;
 import static org.lwjgl.opengl.ARBVertexShader.GL_VERTEX_SHADER_ARB;
 import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL20.*;
-import util.Log;
 import util.Util;
 
 public class Shader {
@@ -41,10 +37,10 @@ public class Shader {
 
     public Shader(String vert, String frag) {
         if (vert.endsWith(".vert")) {
-            vert = fileToString(vert);
+            vert = Util.fileToString("src/shaders/" + vert);
         }
         if (frag.endsWith(".frag")) {
-            frag = fileToString(frag);
+            frag = Util.fileToString("src/shaders/" + frag);
         }
         create(createShader(vert, GL_VERTEX_SHADER_ARB), createShader(frag, GL_FRAGMENT_SHADER_ARB));
     }
@@ -73,25 +69,6 @@ public class Shader {
 
     private void enable() {
         glUseProgramObjectARB(id);
-    }
-
-    private static String fileToString(String filename) {
-        filename = "src/shaders/" + filename;
-        StringBuilder source = new StringBuilder();
-        try {
-            FileInputStream in = new FileInputStream(filename);
-            BufferedReader reader;
-            reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                source.append(line).append('\n');
-            }
-            reader.close();
-            in.close();
-        } catch (Exception e) {
-            Log.error("Could not read file " + filename + ": " + e);
-        }
-        return source.toString();
     }
 
     public void set(String name, double... vals) {

@@ -3,12 +3,12 @@ package graphics;
 import graphics.data.GLFont;
 import graphics.data.Texture;
 import graphics.loading.FontContainer;
-import util.Color4;
-import util.Vec2;
 import java.util.ArrayList;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.opengl.TextureImpl;
+import util.Color4;
+import util.Vec2;
 
 public abstract class Graphics2D {
 
@@ -57,7 +57,7 @@ public abstract class Graphics2D {
     }
 
     public static void drawLine(Vec2 start, Vec2 end) {
-        drawLine(start, end, Color4.BLACK, 2);
+        drawLine(start, end, Color4.BLACK, 1);
     }
 
     public static void drawLine(Vec2 start, Vec2 end, Color4 color, int width) {
@@ -196,6 +196,7 @@ public abstract class Graphics2D {
     public static void fillRect(Vec2 pos, Vec2 size, Color4 color) {
         glPushMatrix();
         glDisable(GL_TEXTURE_2D);
+        glLineWidth(1);
         color.glColor();
         glTranslated(pos.x, pos.y, 0);
         glScaled(size.x, size.y, 1);
@@ -224,5 +225,10 @@ public abstract class Graphics2D {
             }
         }
         return height;
+    }
+
+    public static int getTextWidth(String s, String font) {
+        GLFont glFont = FontContainer.get(font);
+        return glFont.getWidth(s);
     }
 }

@@ -1,5 +1,8 @@
 package util;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -9,6 +12,24 @@ public abstract class Util {
 
     public static double clamp(double val, double min, double max) {
         return Math.max(min, Math.min(max, val));
+    }
+
+    public static String fileToString(String filename) {
+        StringBuilder source = new StringBuilder();
+        try {
+            FileInputStream in = new FileInputStream(filename);
+            BufferedReader reader;
+            reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                source.append(line).append('\n');
+            }
+            reader.close();
+            in.close();
+        } catch (Exception e) {
+            Log.error("Could not read file " + filename + ": " + e);
+        }
+        return source.toString();
     }
 
     public static void forRange(int start, int end, Consumer<Integer> c) {

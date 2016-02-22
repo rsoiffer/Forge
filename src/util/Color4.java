@@ -10,7 +10,7 @@ public class Color4 {
     public final static Color4 RED = new Color4(1, 0, 0, 1);
     public final static Color4 GREEN = new Color4(0, 1, 0, 1);
     public final static Color4 BLUE = new Color4(0, 0, 1, 1);
-    public final static Color4 PURPLE = new Color4(1, 0, 1, 1);
+    public final static Color4 PURPLE = new Color4(.5, 0, 1, 1);
     public final static Color4 YELLOW = new Color4(1, 1, 0, 1);
     public final static Color4 ORANGE = new Color4(1, 0.5, 0, 1);
     public final static Color4 TRANSPARENT = new Color4(0, 0, 0, 0);
@@ -48,6 +48,10 @@ public class Color4 {
 
     public Color4 multiply(double d) {
         return new Color4(r * d, g * d, b * d, a);
+    }
+
+    public static Color4 random() {
+        return new Color4(Math.random(), Math.random(), Math.random());
     }
 
     public FloatBuffer toFloatBuffer() {

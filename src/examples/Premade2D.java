@@ -33,6 +33,15 @@ public abstract class Premade2D {
         return e.addChild(Core.update.collect(g, (v, dt) -> velocity.edit(v.multiply(dt)::add)), "gravity");
     }
 
+    public static void makeArrowKeyMovement(AbstractEntity e, double speed) {
+        Signal<Vec2> velocity = e.get("velocity", Vec2.class);
+        e.onUpdate(dt -> velocity.set(ZERO));
+        e.add(Input.whileKeyDown(Keyboard.KEY_LEFT).forEach(dt -> velocity.edit(new Vec2(-speed, 0)::add)),
+                Input.whileKeyDown(Keyboard.KEY_RIGHT).forEach(dt -> velocity.edit(new Vec2(speed, 0)::add)),
+                Input.whileKeyDown(Keyboard.KEY_UP).forEach(dt -> velocity.edit(new Vec2(0, speed)::add)),
+                Input.whileKeyDown(Keyboard.KEY_DOWN).forEach(dt -> velocity.edit(new Vec2(0, -speed)::add)));
+    }
+
     public static void makeWASDMovement(AbstractEntity e, double speed) {
         Signal<Vec2> velocity = e.get("velocity", Vec2.class);
         e.onUpdate(dt -> velocity.set(ZERO));
