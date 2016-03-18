@@ -76,6 +76,7 @@ public class CellBall {
             Signal<Vec2> position = Premade2D.makePosition(this);
 
             Signal<Double> fade = Core.update.reduce(.5, (dt, t) -> Math.min(t + dt, .5));
+            //Color4 c = new Color4(Math.random(), Math.random(), Math.random());
             Signal<Color4> color = addChild(fade.map(x -> (grow ? GREEN : RED).multiply(1 - x)), "color");
             EventStream notify = addChild(new EventStream(), "notify");
             notify.onEvent(() -> fade.set(0.));

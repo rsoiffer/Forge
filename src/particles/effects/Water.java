@@ -83,7 +83,7 @@ public class Water extends AbstractEntity {
 
     public void splash(double x, double strength, ParticleEmitter drops) {
         int index = indexOf(x);
-        speeds[index] = -strength * strength / 500;
+        speeds[index] = strength * strength / 500;
         Util.repeat((int) (strength * strength) / 2000, () -> {
             Vec2 dir = Vec2.fromPolar(Math.random(), Math.random() * Math.PI);
             drops.particles.add(new Particle(new Vec2(x, heights[index]).add(dir), dir.multiply(50 * Math.sqrt(strength))));
