@@ -11,7 +11,8 @@ public abstract class AbstractEntity extends Destructible {
     private final Map<String, Destructible> components = new HashMap();
 
     public void add(Destructible... a) {
-        Arrays.asList(a).forEach(d -> d.addChild(this));
+        //Arrays.asList(a).forEach(d -> d.addChild(this));
+        Arrays.asList(a).forEach(this::addChild);
     }
 
     public <R extends Destructible> R addChild(R child, String name) {

@@ -49,6 +49,11 @@ public abstract class Premade2D {
                 Input.whileKeyDown(Keyboard.KEY_D).forEach(dt -> velocity.edit(new Vec2(speed, 0)::add)),
                 Input.whileKeyDown(Keyboard.KEY_W).forEach(dt -> velocity.edit(new Vec2(0, speed)::add)),
                 Input.whileKeyDown(Keyboard.KEY_S).forEach(dt -> velocity.edit(new Vec2(0, -speed)::add)));
+        e.onUpdate(dt -> {
+            if (velocity.get().lengthSquared() > speed * speed) {
+                velocity.edit(v -> v.withLength(speed));
+            }
+        });
     }
 
     //Graphics

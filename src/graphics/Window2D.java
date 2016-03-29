@@ -46,7 +46,7 @@ public abstract class Window2D {
 
         Input.whenKey(Keyboard.KEY_F11, true).onEvent(() -> Camera.setDisplayMode(width, height, !Display.isFullscreen()));
         Input.whenKey(Keyboard.KEY_ESCAPE, true).onEvent(() -> System.exit(0));
-        Core.render.onEvent(() -> update());
+        Core.renderLayer(-1).onEvent(Window2D::update);
     }
 
     public static void update() {

@@ -25,6 +25,10 @@ public abstract class RegisteredEntity extends AbstractEntity {
         super.destroy();
     }
 
+    public static <T extends RegisteredEntity> Optional<T> get(Class<T> c) {
+        return getAll(c).stream().findAny();
+    }
+
     public static <T extends RegisteredEntity> List<T> getAll(Class<T> c) {
         if (ALL.containsKey(c)) {
             return (List) ALL.get(c);

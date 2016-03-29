@@ -70,20 +70,6 @@ public abstract class TextureLoader {
     }
 
     /**
-     * Get the closest greater power of 2 to the fold number
-     *
-     * @param fold The target number
-     * @return The power of 2
-     */
-    private static int get2Fold(int fold) {
-        int ret = 2;
-        while (ret < fold) {
-            ret *= 2;
-        }
-        return ret;
-    }
-
-    /**
      * Convert the buffered image to a texture
      *
      * @param bufferedImage The image to convert to a texture
@@ -95,17 +81,19 @@ public abstract class TextureLoader {
         WritableRaster raster;
         BufferedImage texImage;
 
-        int texWidth = 2;
-        int texHeight = 2;
-
-        // find the closest power of 2 for the width and height
-        // of the produced texture
-        while (texWidth < bufferedImage.getWidth()) {
-            texWidth *= 2;
-        }
-        while (texHeight < bufferedImage.getHeight()) {
-            texHeight *= 2;
-        }
+//        int texWidth = 2;
+//        int texHeight = 2;
+//
+//        // find the closest power of 2 for the width and height
+//        // of the produced texture
+//        while (texWidth < bufferedImage.getWidth()) {
+//            texWidth *= 2;
+//        }
+//        while (texHeight < bufferedImage.getHeight()) {
+//            texHeight *= 2;
+//        }
+        int texWidth = bufferedImage.getWidth();
+        int texHeight = bufferedImage.getHeight();
 
         texture.setTextureHeight(texHeight);
         texture.setTextureWidth(texWidth);
@@ -183,7 +171,7 @@ public abstract class TextureLoader {
             }
 
             // produce a texture from the byte buffer
-            glTexImage2D(target, 0, dstPixelFormat, get2Fold(bufferedImage.getWidth()), get2Fold(bufferedImage.getHeight()), 0, srcPixelFormat, GL_UNSIGNED_BYTE, textureBuffer);
+            glTexImage2D(target, 0, dstPixelFormat, bufferedImage.getWidth(), bufferedImage.getHeight(), 0, srcPixelFormat, GL_UNSIGNED_BYTE, textureBuffer);
         }
 
         return textures;
