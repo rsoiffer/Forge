@@ -9,21 +9,24 @@ import util.Vec2;
 public class GUIText extends GUIComponent {
     
     String text="";
-    int width;
+    Vec2 dim;
     int size;
     Color color;
     Vec2 pos;
     
-    public GUIText init(Color c, int w){
-        FontContainer.init();
+    public GUIText init(Vec2 d, int s, Color c, Vec2 p, String t){
+        dim = d;
+        size = s;
         color = c;
-        width = w;
+        pos = p;
+        text = t;
+        FontContainer.add("Console", "Courier New", Font.PLAIN, size);
         return this;
     }
     
     @Override
     public void draw() {
-        Graphics2D.drawText(text, "Font", pos, Color.white, width);
+        Graphics2D.drawText(text, "Console", pos.add(Vec2.ZERO.withY(size)), color, (int)dim.x);
     }
 
     @Override
@@ -50,10 +53,17 @@ public class GUIText extends GUIComponent {
         return this;
     }
     public int getWidth(){
-        return width;
+        return (int)dim.x;
     }
     public GUIText setWidth(int w){
-        width = w;
+        dim = dim.withX(w);
+        return this;
+    }
+    public int getHeight(){
+        return (int)dim.y;
+    }
+    public GUIText setHeight(int h){
+        dim = dim.withY(h);
         return this;
     }
     public int getSize(){
@@ -62,6 +72,30 @@ public class GUIText extends GUIComponent {
     public GUIText setSize(int s){
         size = s;
         return this;
+    }
+
+    @Override
+    public void update() {
+        truncate();
+    }
+    
+    private void truncate(){
+        String[] subs = text.split(" ");
+        String[] lines = new String[subs.length];
+        int n = 1;
+        for (int i = 0; i < subs.length; i++) {
+            if (FontContainer.get("Console").getWidth(lines[n-1] + " " + subs[i]) < dim.x) {
+                lines[n-1] += " " + subs[i];
+            } else {
+                n++;
+                lines[n-1] = subs[i];
+            }
+        }
+        if(n>dim.y/size-2){ //One to get onscreen, one to leave a space
+            int length = 0;
+            text=text.substring(lines[0].length()+1);
+            truncate();
+        }
     }
     
 }

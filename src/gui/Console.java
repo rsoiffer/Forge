@@ -11,15 +11,23 @@ import util.Vec2;
 public class Console extends GUI {
 
     private ArrayList<GUIComponent> components = super.components;
+    
+    public GUIRectangle background;
+    public GUIText outputText;
 
-    public void init(Vec2 pos, Vec2 dim) {
-        components.add(new GUIRectangle().setPos(pos).setDim(dim).setColor(Color4.BLACK));
-        components.add(new GUIText().init(Color.white, (int)dim.x).setPos(pos).setSize(100).setText("Hello World!"));
+    public Console init(Vec2 pos, Vec2 dim, int size) {
+        background = new GUIRectangle().setPos(pos).setDim(dim).setColor(Color4.BLACK);
+        outputText = new GUIText().init(dim.subtract(new Vec2(0,size)), size, Color.white, pos.add(new Vec2(0,dim.y-size)),"Hello World");
+        components.add(background);
+        components.add(outputText);
+        return this;
     }
 
     @Override
     public void update() {
-
+        components.forEach(c->{
+            c.update();
+        });
     }
     @Override
     public void open() {

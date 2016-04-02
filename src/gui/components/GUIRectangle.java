@@ -20,6 +20,8 @@ public class GUIRectangle extends GUIComponent{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+    @Override public void update(){}
+    
     public Vec2 getPos(){
         return pos;
     }
