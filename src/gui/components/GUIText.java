@@ -20,7 +20,7 @@ public class GUIText extends GUIComponent {
         color = c;
         pos = p;
         text = t;
-        FontContainer.add("Console", "Courier New", Font.PLAIN, size);
+        FontContainer.add("Console", "Times New Roman", Font.PLAIN, size);
         return this;
     }
     
@@ -91,7 +91,7 @@ public class GUIText extends GUIComponent {
                 lines[n-1] = subs[i];
             }
         }
-        if(n>dim.y/size-2){ //One to get onscreen, one to leave a space
+        if(n>dim.y/FontContainer.get("Console").getHeight()){ //One to get onscreen, one to leave a space
             int length = 0;
             text=text.substring(lines[0].length()+1);
             truncate();
