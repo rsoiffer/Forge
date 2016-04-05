@@ -1,9 +1,11 @@
 package gui;
 
 import engine.Core;
+import graphics.Camera;
 import graphics.Window3D;
 import java.util.ArrayList;
 import java.util.Arrays;
+import util.Vec2;
 
 public class GUIController {
 
@@ -19,6 +21,7 @@ public class GUIController {
     }
     public static void draw(){
         Window3D.guiProjection();
+        Camera.setProjection2D(Vec2.ZERO, new Vec2(1200,800));
         guis.forEach(g -> {
             if(g.isOpen()) g.draw();
         });

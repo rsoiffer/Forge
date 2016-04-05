@@ -142,6 +142,9 @@ public abstract class Graphics2D {
     public static void drawText(String s, Vec2 pos) {
         drawText(s, "Default", pos, Color.black);
     }
+    public static void drawText(String s, Vec2 pos, Color col) {
+        drawText(s, "Default", pos, col);
+    }
 
     public static void drawText(String s, String font, Vec2 pos, Color c) {
         TextureImpl.bindNone();
