@@ -66,7 +66,7 @@ public abstract class Window3D {
     }
 
     public static void guiProjection() {
-        Camera.setProjection2D(new Vec2(0), new Vec2(1200,800));
+        Camera.setProjection2D(new Vec2(0), new Vec2(1200, 800));
     }
 
     public static void resetProjection() {
