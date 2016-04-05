@@ -111,7 +111,7 @@ public abstract class Graphics2D {
         glTranslated(pos.x, pos.y, 0);
         glRotated(angle * 180 / Math.PI, 0, 0, 1);
         glScaled(scale.x, scale.y, 1);
-        glTranslated(-s.getImageWidth() / 2, -s.getImageHeight() / 2, 0);
+        glTranslated(-s.getImageWidth() / 2., -s.getImageHeight() / 2., 0);
 
         glBegin(GL_QUADS);
         {

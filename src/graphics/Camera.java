@@ -93,6 +93,7 @@ public abstract class Camera {
 
         glDisable(GL_ALPHA_TEST);
         glDisable(GL_LIGHTING);
+        glDisable(GL_DEPTH_TEST);
     }
 
     public static void setProjection3D(double fov, double aspectRatio, Vec3 pos, Vec3 lookAt, Vec3 UP) {
@@ -107,5 +108,6 @@ public abstract class Camera {
 
         //glEnable(GL_LIGHTING);
         glEnable(GL_ALPHA_TEST);
+        glEnable(GL_DEPTH_TEST);
     }
 }
