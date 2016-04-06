@@ -147,7 +147,8 @@ public abstract class Graphics2D {
     }
 
     public static void drawText(String s, String font, Vec2 pos, Color c) {
-        drawText(s, font, pos, c, FontContainer.get(font).getWidth(s));
+        TextureImpl.bindNone();
+        FontContainer.get(font).drawString((float) pos.x, (float )pos.y, s, c);
     }
 
     public static void drawText(String s, String font, Vec2 pos, Color c, int maxWidth) {

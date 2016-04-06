@@ -1,28 +1,29 @@
 package gui.components;
 
 import graphics.Graphics2D;
+import graphics.data.GLFont;
 import graphics.loading.FontContainer;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.List;
 import org.newdawn.slick.Color;
 import util.Vec2;
 
 public class GUIText extends GUIComponent {
 
-    ArrayList<String> lines = new ArrayList();
-    String text;
+    List<String> lines = new ArrayList();
     Vec2 dim;
-    int size;
     Color color;
     Vec2 pos;
+    GLFont font;
 
-    public GUIText init(Vec2 d, int s, Color c, Vec2 p, String t) {
+    public GUIText init(Vec2 d, Color c, Vec2 p, String t, GLFont f) {
         dim = d;
-        size = s;
         color = c;
         pos = p;
         lines.add(t);
-        FontContainer.add("Console", "Times New Roman", Font.PLAIN, size);
+        font = f;
+        fixLines();
         return this;
     }
 
@@ -32,23 +33,25 @@ public class GUIText extends GUIComponent {
     }
 
     public GUIText appendText(String s) {
-        lines.set(Math.max(0, lines.toArray().length-1),lines.get(Math.max(0,lines.toArray().length-1))+s);
+        lines.set(0, lines.get(0) + s);
+        fixLines();
         return this;
     }
-    
+
     public GUIText appendLine(String s) {
-        lines.add(s);
+        lines.add(0, s);
+        fixLines();
         return this;
     }
 
     public GUIText setText(String s) {
-        for(String t : lines){
-            lines.remove(t);
-        }
+        lines = new ArrayList();
+        lines.add(0, s);
+        fixLines();
         return this;
     }
 
-    public ArrayList<String> getLines() {
+    public List<String> getLines() {
         return lines;
     }
 
@@ -79,27 +82,34 @@ public class GUIText extends GUIComponent {
         return this;
     }
 
-    public int getSize() {
-        return size;
-    }
-
-    public GUIText setSize(int s) {
-        size = s;
-        return this;
-    }
-
     @Override
     public void update() {
-        text="";
-        lines.forEach(s -> {
-            text+=s;
-            if(text.indexOf(s)!=0) text+="\n";
-        });
+
+    }
+
+    public void fixLines() {
+
+        if (!lines.get(0).contains("\n")) {
+
+            return;
+        }
+
+        for (int i = 0; i < lines.get(0).length(); i++) {
+
+            if (lines.get(0).charAt(i) == '\n') {
+
+                lines.set(0, lines.get(0).substring(0, i + 1));
+                lines.add(0, lines.get(0).substring(i + 1));
+                fixLines();
+            }
+        }
     }
 
     @Override
     public void draw() {
-        Graphics2D.drawText(text, "Console", pos.add(Vec2.ZERO.withY(size)), color, (int) dim.x);
+        for (int i = 0; i < Math.floor(dim.y / font.getHeight()) && i < lines.size(); i++) {
+            Graphics2D.drawText(lines.get(i), "Console", pos.subtract(new Vec2(0, dim.y - font.getHeight() * i)), color);
+        }
     }
 
 }
