@@ -13,7 +13,7 @@ public class Console extends GUI {
 
     public Console init(Vec2 pos, Vec2 dim, int size) {
         background = new GUIRectangle().setPos(pos).setDim(dim).setColor(Color4.BLACK);
-        outputText = new GUIText().init(dim.subtract(new Vec2(0, size)), size, Color.white, pos.add(new Vec2(0, dim.y - size)), "Hello World");
+        outputText = new GUIText().init(dim.subtract(new Vec2(0, size)), size, Color.white, pos.add(new Vec2(0, dim.y - size)), "Hello\nWorld");
         components.add(background);
         components.add(outputText);
         return this;

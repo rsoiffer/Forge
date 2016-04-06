@@ -3,12 +3,14 @@ package gui.components;
 import graphics.Graphics2D;
 import graphics.loading.FontContainer;
 import java.awt.Font;
+import java.util.ArrayList;
 import org.newdawn.slick.Color;
 import util.Vec2;
 
 public class GUIText extends GUIComponent {
 
-    String text = "";
+    ArrayList<String> lines = new ArrayList();
+    String text;
     Vec2 dim;
     int size;
     Color color;
@@ -19,14 +21,9 @@ public class GUIText extends GUIComponent {
         size = s;
         color = c;
         pos = p;
-        text = t;
+        lines.add(t);
         FontContainer.add("Console", "Times New Roman", Font.PLAIN, size);
         return this;
-    }
-
-    @Override
-    public void draw() {
-        Graphics2D.drawText(text, "Console", pos.add(Vec2.ZERO.withY(size)), color, (int) dim.x);
     }
 
     @Override
@@ -35,17 +32,24 @@ public class GUIText extends GUIComponent {
     }
 
     public GUIText appendText(String s) {
-        text += s;
+        lines.set(Math.max(0, lines.toArray().length-1),lines.get(Math.max(0,lines.toArray().length-1))+s);
+        return this;
+    }
+    
+    public GUIText appendLine(String s) {
+        lines.add(s);
         return this;
     }
 
     public GUIText setText(String s) {
-        text = s;
+        for(String t : lines){
+            lines.remove(t);
+        }
         return this;
     }
 
-    public String getText() {
-        return text;
+    public ArrayList<String> getLines() {
+        return lines;
     }
 
     public Vec2 getPos() {
@@ -86,26 +90,16 @@ public class GUIText extends GUIComponent {
 
     @Override
     public void update() {
-        truncate();
+        text="";
+        lines.forEach(s -> {
+            text+=s;
+            if(text.indexOf(s)!=0) text+="\n";
+        });
     }
 
-    private void truncate() {
-        String[] subs = text.split(" ");
-        String[] lines = new String[subs.length];
-        int n = 1;
-        for (int i = 0; i < subs.length; i++) {
-            if (FontContainer.get("Console").getWidth(lines[n - 1] + " " + subs[i]) < dim.x) {
-                lines[n - 1] += " " + subs[i];
-            } else {
-                n++;
-                lines[n - 1] = subs[i];
-            }
-        }
-        if (n > dim.y / FontContainer.get("Console").getHeight()) { //One to get onscreen, one to leave a space
-            int length = 0;
-            text = text.substring(lines[0].length() + 1);
-            truncate();
-        }
+    @Override
+    public void draw() {
+        Graphics2D.drawText(text, "Console", pos.add(Vec2.ZERO.withY(size)), color, (int) dim.x);
     }
 
 }
