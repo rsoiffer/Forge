@@ -11,6 +11,7 @@ import util.Vec2;
 
 public class GUIText extends GUIComponent {
 
+    private static final char[] nextL = {' ', '-', ':', ';', ',', '.', '?', '!', ')', '}', ']', '%'};
     List<String> lines = new ArrayList();
     Vec2 dim;
     Color color;
@@ -87,10 +88,47 @@ public class GUIText extends GUIComponent {
 
     }
 
+    private int indexOfLine(int i) {
+
+        boolean lineChar = false;
+        int n = i;
+        
+        do{
+            
+            if(isLineChar(lines.get(0).charAt(n))){
+                
+                return n;
+            }
+            
+            n--;
+        }while(!lineChar && n > 0);
+        
+        return i;
+    }
+    
+    private boolean isLineChar(char c){
+        
+        for (char ch : nextL) {
+            
+            if(ch == c){
+                
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
     public void fixLines() {
 
-        if (!lines.get(0).contains("\n")) {
+        if (font.getWidth(lines.get(0)) > dim.x) {
+            int n = (int) Math.floor(dim.x / font.getWidth("_"));
 
+            n = indexOfLine(n);
+            lines.set(0, lines.get(0).substring(0, n) + "\n" + lines.get(0).substring(n));
+        }
+
+        if (!lines.get(0).contains("\n")) {
             return;
         }
 
@@ -98,9 +136,11 @@ public class GUIText extends GUIComponent {
 
             if (lines.get(0).charAt(i) == '\n') {
 
-                lines.set(0, lines.get(0).substring(0, i + 1));
-                lines.add(0, lines.get(0).substring(i + 1));
+                String s = lines.get(0);
+                lines.set(0, s.substring(0, i));
+                lines.add(0, s.substring(i + 1));
                 fixLines();
+                return;
             }
         }
     }
