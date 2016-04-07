@@ -29,14 +29,19 @@ public class TypingManager extends Signal<Boolean> {
     private static boolean caps = Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_CAPS_LOCK);
     
     private static final Map<Integer, Signal<Boolean>> convert = new HashMap();
-    private static final Character toChar[] = {null, '1', '2', '3', '4', '5',
+    
+    //28=enter 29=L Ctrl 42=L Shift 43=\ 56=L Alt 59-68=F1-F10 87-88=F11-F12
+    private static final Character regKeys[] = {null, '1', '2', '3', '4', '5',
         '6', '7', '8', '9', '0', '-', '=', (char) 8, (char) 9, 'q', 'w', 'e',
         'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', null, null, 'a', 's', 'd', 
         'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '`', null, null, 'z', 'x', 'c',
-        'v', 'b', 'n', 'm', ',', '.', '/', null, '*', null, ' ', null, null, null,
-        null, null, null, null, null, null, null, null, null, null, '7', '8', '9',
-        '-', '4', '5', '6', '+', '1', '2', '3', '0', '.', null, null, null, null, null};
+        'v', 'b', 'n', 'm', ',', '.', '/', null, '*', null, ' ', null, null,
+        null, null, null, null, null, null, null, null, null, null, null, '7',
+        '8', '9', '-', '4', '5', '6', '+', '1', '2', '3', '0', '.', null, null,
+        null, null, null};
     
+    private static final Character shiftKeys[] = {};
+    private static final Character altKeys[] = {};
     
     static{
         
