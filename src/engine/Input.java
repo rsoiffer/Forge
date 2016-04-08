@@ -2,7 +2,9 @@ package engine;
 
 import graphics.Window2D;
 import graphics.Window3D;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -119,5 +121,10 @@ public class Input {
     
     public static Signal<Double> whileMouse(int mouse, boolean val) {
         return Core.update.filter(mouseSignal(mouse).filter(new Signal(val)));
+    }
+    
+    public static Map<Integer, Signal<Boolean>> getKeyMap(){
+        
+        return keyMap;
     }
 }

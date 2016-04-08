@@ -1,5 +1,7 @@
 package gui;
 
+import graphics.data.GLFont;
+import graphics.loading.FontContainer;
 import gui.components.GUIRectangle;
 import gui.components.GUIText;
 import org.newdawn.slick.Color;
@@ -10,10 +12,12 @@ public class Console extends GUI {
 
     public GUIRectangle background;
     public GUIText outputText;
-
-    public Console init(Vec2 pos, Vec2 dim, int size) {
-        background = new GUIRectangle().setPos(pos).setDim(dim).setColor(Color4.BLACK);
-        outputText = new GUIText().init(dim.subtract(new Vec2(0, size)), size, Color.white, pos.add(new Vec2(0, dim.y - size)), "Hello World");
+    public static GLFont font = FontContainer.get("Console");
+    
+    public Console init(Vec2 pos, Vec2 dim) {
+        
+        background = new GUIRectangle().setPos(pos).setDim(dim).setColor(Color4.BLUE.withA(.5).withG(.5).withB(.5));
+        outputText = new GUIText().init(dim.subtract(new Vec2(0, font.getHeight())), Color.white, pos.add(new Vec2(0, dim.y + font.getHeight())), "", font);
         components.add(background);
         components.add(outputText);
         return this;

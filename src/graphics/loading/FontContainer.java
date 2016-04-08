@@ -12,6 +12,7 @@ public abstract class FontContainer {
         add("Default", "Cambria", Font.PLAIN, 22);
         //add("Small", "Calibri", Font.PLAIN, 16);
         //add("Medium", "Cambria", Font.PLAIN, 20);
+        add("Console", "Monospaced", Font.BOLD, 16);
     }
 
     public static void add(String gameName, String name, int style, int size) {

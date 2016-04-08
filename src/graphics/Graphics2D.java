@@ -148,21 +148,28 @@ public abstract class Graphics2D {
 
     public static void drawText(String s, String font, Vec2 pos, Color c) {
         TextureImpl.bindNone();
-        FontContainer.get(font).drawString((float) pos.x, (float) pos.y, s, c);
+        FontContainer.get(font).drawString((float) pos.x, (float )pos.y, s, c);
     }
 
     public static void drawText(String s, String font, Vec2 pos, Color c, int maxWidth) {
         TextureImpl.bindNone();
         GLFont glFont = FontContainer.get(font);
         String parts[] = s.split(" ");
-        String toDraw = parts[0];
+        String toDraw = "";
         int height = 0;
-        for (int i = 1; i < parts.length; i++) {
-            if (glFont.getWidth(toDraw + " " + parts[i]) < maxWidth) {
+        for (int i = 0; i < parts.length; i++) {
+            if (glFont.getWidth(toDraw + " " + parts[i]) < maxWidth && !parts[i].contains("\n")) {
                 toDraw += " " + parts[i];
             } else {
+                for(char n : parts[i].toCharArray()){
+                    if(n=='\n'){
+                        glFont.drawString((float) pos.x, (float) pos.y - height, toDraw, c);
+                        toDraw="";
+                        height+=glFont.getHeight();
+                    }else toDraw+=n;
+                }
                 glFont.drawString((float) pos.x, (float) pos.y - height, toDraw, c);
-                toDraw = parts[i];
+                toDraw = "";
                 height += glFont.getHeight();
             }
         }
