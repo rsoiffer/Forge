@@ -25,10 +25,10 @@ public class TypingManager extends Signal<Boolean> {
     static String buffer = "";
     private static Console con = null;
 
-    private static boolean shift = false;
-    private static boolean ctrl = false;
-    private static boolean alt = false;
-    private static boolean caps = Toolkit.getDefaultToolkit().getLockingKeyState(VK_CAPS_LOCK);
+    private static Signal<Boolean> shift = new Signal(false);
+    private static Signal<Boolean> ctrl = new Signal(false);
+    private static Signal<Boolean> alt = new Signal(false);
+    private static Signal<Boolean> caps = new Signal(Toolkit.getDefaultToolkit().getLockingKeyState(VK_CAPS_LOCK));
 
     private static final Map<Integer, Signal<Boolean>> convert;
     private static final Map<Integer, Runnable> funcKeys;
@@ -60,14 +60,6 @@ public class TypingManager extends Signal<Boolean> {
             '8', '9', '-', '4', '5', '6', '+', '1', '2', '3', '0', '.', null, null,
             null, null, null};
 
-        funcKeys.put(28, () -> {
-
-            if (con != null) {
-
-                con.outputText.appendLine(getTyped());
-            }
-        });
-
         for (int i = 0; i <= 88; i++) {
 
             if (regKeys[i] != null && shiftKeys[i] != null) {
@@ -83,17 +75,17 @@ public class TypingManager extends Signal<Boolean> {
 
         Input.whenKey(key, true).onEvent(() -> {
 
-                con.open();
-                Mouse.setGrabbed(false);
-                typeM.set(true);
+            con.open();
+            Mouse.setGrabbed(false);
+            typeM.set(true);
         });
 
         Input.whenKey(Keyboard.KEY_BACKSLASH, true).onEvent(() -> {
 
-                con.open();
-                Mouse.setGrabbed(false);
-                typeM.set(true);
-                buffer = "\\";
+            con.open();
+            Mouse.setGrabbed(false);
+            typeM.set(true);
+            buffer = "\\";
         });
     }
 
@@ -108,13 +100,13 @@ public class TypingManager extends Signal<Boolean> {
             prevStates.putAll(in);
             in.clear();
             in.putAll(convert);
-            
-            Input.whenKey(1, true).onEvent(() -> {
 
-                    con.close();
-                    Mouse.setGrabbed(true);
-                    typeM.set(false);
-                    buffer = "";
+            Input.whenKey(1, true).onEvent(() -> { //Esc code 1
+
+                con.close();
+                Mouse.setGrabbed(true);
+                typeM.set(false);
+                buffer = "";
             });
 
             Input.whenKey(Keyboard.KEY_RETURN, true).onEvent(() -> {
@@ -125,22 +117,14 @@ public class TypingManager extends Signal<Boolean> {
                 }
             });
 
-            Input.whenKey(Keyboard.KEY_LSHIFT, true).onEvent(() -> {
+            shift = Input.keySignal(Keyboard.KEY_LSHIFT);
 
-                shift = true;
-            });
+            alt = Input.keySignal(56); //Alt code 56
 
-            Input.whenKey(Keyboard.KEY_LSHIFT, false).onEvent(() -> {
+            caps = Input.whenKey(Keyboard.KEY_CAPITAL, true).reduce(
+                    Toolkit.getDefaultToolkit().getLockingKeyState(VK_CAPS_LOCK), b -> !b);
 
-                shift = false;
-            });
-
-            Input.whenKey(Keyboard.KEY_CAPITAL, true).onEvent(() -> {
-
-                caps = !caps;
-            });
-
-            Input.whenKey(14, true).onEvent(() -> {
+            Input.whenKey(14, true).onEvent(() -> { //Backspace code 14
 
                 if (buffer.length() > 0) {
 
@@ -193,16 +177,16 @@ public class TypingManager extends Signal<Boolean> {
 
     public static boolean getShift() {
 
-        return shift;
+        return shift.get();
     }
 
     public static boolean getCaps() {
 
-        return caps;
+        return caps.get();
     }
 
     public static boolean getAlt() {
 
-        return alt;
+        return alt.get();
     }
 }
