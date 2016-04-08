@@ -31,7 +31,6 @@ public class TypingManager extends Signal<Boolean> {
     private static Signal<Boolean> caps = new Signal(Toolkit.getDefaultToolkit().getLockingKeyState(VK_CAPS_LOCK));
 
     private static final Map<Integer, Signal<Boolean>> convert;
-    private static final Map<Integer, Runnable> funcKeys;
 
     //14=backspace 15=tab 28=enter 29=L Ctrl 41-` or ~ 42=L Shift 43=\ 56=L Alt 59-68=F1-F10 87-88=F11-F12
     private static final Character regKeys[];
@@ -40,7 +39,6 @@ public class TypingManager extends Signal<Boolean> {
     static {
 
         convert = new HashMap();
-        funcKeys = new HashMap();
 
         regKeys = new Character[]{null, null, '1', '2', '3', '4',
             '5', '6', '7', '8', '9', '0', '-', '=', null, null, 'q', 'w',
