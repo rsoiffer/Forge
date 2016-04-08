@@ -6,6 +6,7 @@
 package gui;
 
 import engine.Signal;
+import static gui.TypingManager.addChar;
 import static gui.TypingManager.getCaps;
 import static gui.TypingManager.getShift;
 
@@ -25,17 +26,6 @@ public class TypeKey extends Signal<Boolean> {
         lower = l;
         upper = u;
         caps = c;
-        
-        this.filter(x -> x == true).onEvent(() -> {
-        
-            if((caps && getCaps()) ^ getShift()){
-                
-                //lower?
-            }else{
-                
-                //upper?
-            }
-        });
+        filter(x -> x == true).onEvent(() -> addChar(((caps && getCaps()) ^ !getShift()) ? lower : upper));
     }
-    
 }

@@ -11,16 +11,19 @@ import util.Vec2;
 public class Console extends GUI {
 
     public GUIRectangle background;
+    public GUIRectangle textground;
     public GUIText outputText;
     public static GLFont font = FontContainer.get("Console");
     
-    public Console init(Vec2 pos, Vec2 dim) {
+    public Console(String n, Vec2 pos, Vec2 dim) {
         
+        super(n);
         background = new GUIRectangle().setPos(pos).setDim(dim).setColor(Color4.BLUE.withA(.5).withG(.5).withB(.5));
-        outputText = new GUIText().init(dim.subtract(new Vec2(0, font.getHeight())), Color.white, pos.add(new Vec2(0, dim.y + font.getHeight())), "", font);
+        textground = new GUIRectangle().setPos(pos.add(new Vec2(0, dim.y))).setDim(dim.withY(font.getHeight())).setColor(Color4.BLACK.withA(.5));
+        outputText = new GUIText(dim, Color.white, pos.add(new Vec2(0, dim.y + font.getHeight())), "", font);
         components.add(background);
+        components.add(textground);
         components.add(outputText);
-        return this;
     }
 
     @Override

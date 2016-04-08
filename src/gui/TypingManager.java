@@ -8,11 +8,11 @@ package gui;
 import engine.Input;
 import engine.Signal;
 import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
+import static java.awt.event.KeyEvent.VK_CAPS_LOCK;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 /**
  *
@@ -21,75 +21,188 @@ import java.util.Map;
 public class TypingManager extends Signal<Boolean> {
 
     private static final Map<Integer, Signal<Boolean>> prevStates = new HashMap();
-    private static final String buffer = "";
+    private static TypingManager typeM;
+    static String buffer = "";
+    private static Console con = null;
 
     private static boolean shift = false;
     private static boolean ctrl = false;
     private static boolean alt = false;
-    private static boolean caps = Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_CAPS_LOCK);
+    private static boolean caps = Toolkit.getDefaultToolkit().getLockingKeyState(VK_CAPS_LOCK);
 
-    private static final Map<Integer, Signal<Boolean>> convert = new HashMap();
+    private static final Map<Integer, Signal<Boolean>> convert;
+    private static final Map<Integer, Runnable> funcKeys;
 
-    //28=enter 29=L Ctrl 42=L Shift 43=\ 56=L Alt 59-68=F1-F10 87-88=F11-F12
-    
-    private static final Character regKeys[] = {null, null, '1', '2', '3', '4',
-        '5', '6', '7', '8', '9', '0', '-', '=', (char) 8, (char) 9, 'q', 'w',
-        'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', null, null, 'a', 's',
-        'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '`', null, null, 'z', 'x',
-        'c', 'v', 'b', 'n', 'm', ',', '.', '/', null, '*', null, ' ', null, null,
-        null, null, null, null, null, null, null, null, null, null, null, '7',
-        '8', '9', '-', '4', '5', '6', '+', '1', '2', '3', '0', '.', null, null,
-        null, null, null};
-
-    private static final Character shiftKeys[] = {null, null, '!', '@', '#',
-        '%', '^', '&', '*', '(', ')', '_', '+', (char) 8, (char) 9, 'Q', 'W',
-        'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', null, null, 'A', 'S',
-        'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', null, '|', 'Z', 'X', 'C',
-        'V', 'B', 'N', 'M', '<', '>', '?', null, '*', null, ' ', null, null,
-        null, null, null, null, null, null, null, null, null, null, null, '7',
-        '8', '9', '-', '4', '5', '6', '+', '1', '2', '3', '0', '.', null, null,
-        null, null, null};
+    //14=backspace 15=tab 28=enter 29=L Ctrl 41-` or ~ 42=L Shift 43=\ 56=L Alt 59-68=F1-F10 87-88=F11-F12
+    private static final Character regKeys[];
+    private static final Character shiftKeys[];
 
     static {
 
+        convert = new HashMap();
+        funcKeys = new HashMap();
+
+        regKeys = new Character[]{null, null, '1', '2', '3', '4',
+            '5', '6', '7', '8', '9', '0', '-', '=', null, null, 'q', 'w',
+            'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', null, null, 'a', 's',
+            'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', null, null, '\\', 'z', 'x',
+            'c', 'v', 'b', 'n', 'm', ',', '.', '/', null, '*', null, ' ', null, null,
+            null, null, null, null, null, null, null, null, null, null, null, '7',
+            '8', '9', '-', '4', '5', '6', '+', '1', '2', '3', '0', '.', null, null,
+            null, null, null};
+
+        shiftKeys = new Character[]{null, null, '!', '@', '#', '$',
+            '%', '^', '&', '*', '(', ')', '_', '+', null, null, 'Q', 'W',
+            'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', null, null, 'A', 'S',
+            'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', null, null, '|', 'Z', 'X',
+            'C', 'V', 'B', 'N', 'M', '<', '>', '?', null, '*', null, ' ', null, null,
+            null, null, null, null, null, null, null, null, null, null, null, '7',
+            '8', '9', '-', '4', '5', '6', '+', '1', '2', '3', '0', '.', null, null,
+            null, null, null};
+
+        funcKeys.put(28, () -> {
+
+            if (con != null) {
+
+                con.outputText.appendLine(getTyped());
+            }
+        });
+
         for (int i = 0; i <= 88; i++) {
 
-            if (regKeys[i] != null) {
+            if (regKeys[i] != null && shiftKeys[i] != null) {
 
-                Signal<Boolean> sb = new Signal(false);
-
-                if (i >= 2 && i <= 11) {
-
-                    
-                }
+                convert.put(i, new TypeKey(regKeys[i], shiftKeys[i], regKeys[i] >= 0x61 && regKeys[i] <= 0x7B));
             }
         }
     }
-    
-    
 
-    public TypingManager() {
+    public static void init(String c, int key) {
 
-        super(false);
-        this.filter(x -> x == true).onEvent(() -> {
+        typeM = new TypingManager(c);
 
-            prevStates.putAll(Input.getKeyMap());
-            Input.getKeyMap().clear();
+        Input.whenKey(key, true).onEvent(() -> {
+
+                con.open();
+                Mouse.setGrabbed(false);
+                typeM.set(true);
+        });
+
+        Input.whenKey(Keyboard.KEY_BACKSLASH, true).onEvent(() -> {
+
+                con.open();
+                Mouse.setGrabbed(false);
+                typeM.set(true);
+                buffer = "\\";
         });
     }
-    
-    public static boolean getShift(){
-        
+
+    private TypingManager(String console) {
+
+        super(false);
+        setConsole(console);
+
+        this.filter(x -> x == true).onEvent(() -> {
+
+            Map<Integer, Signal<Boolean>> in = Input.getKeyMap();
+            prevStates.putAll(in);
+            in.clear();
+            in.putAll(convert);
+            
+            Input.whenKey(1, true).onEvent(() -> {
+
+                    con.close();
+                    Mouse.setGrabbed(true);
+                    typeM.set(false);
+                    buffer = "";
+            });
+
+            Input.whenKey(Keyboard.KEY_RETURN, true).onEvent(() -> {
+
+                if (con != null) {
+
+                    con.outputText.appendLine(getTyped());
+                }
+            });
+
+            Input.whenKey(Keyboard.KEY_LSHIFT, true).onEvent(() -> {
+
+                shift = true;
+            });
+
+            Input.whenKey(Keyboard.KEY_LSHIFT, false).onEvent(() -> {
+
+                shift = false;
+            });
+
+            Input.whenKey(Keyboard.KEY_CAPITAL, true).onEvent(() -> {
+
+                caps = !caps;
+            });
+
+            Input.whenKey(14, true).onEvent(() -> {
+
+                if (buffer.length() > 0) {
+
+                    buffer = buffer.substring(0, buffer.length() - 1);
+                }
+            });
+
+            Input.whenKey(Keyboard.KEY_TAB, true).onEvent(() -> {
+
+                buffer = "   " + buffer;
+            });
+        });
+
+        this.filter(x -> x == false).onEvent(() -> {
+
+            Map<Integer, Signal<Boolean>> in = Input.getKeyMap();
+            in.clear();
+            in.putAll(prevStates);
+            prevStates.clear();
+        });
+    }
+
+    public static void setConsole(String n) {
+
+        GUIController.getGUIList().forEach((s, g) -> {
+
+            if (g != null && g instanceof Console && g.getName() != null && g.getName().equals(n)) {
+
+                con = (Console) g;
+            }
+        });
+    }
+
+    private static String getTyped() {
+
+        String s = buffer;
+        buffer = "";
+        return s;
+    }
+
+    public static String getTypedSave() {
+
+        return buffer;
+    }
+
+    public static void addChar(char c) {
+
+        buffer += c;
+    }
+
+    public static boolean getShift() {
+
         return shift;
     }
-    
-    public static boolean getCaps(){
-        
+
+    public static boolean getCaps() {
+
         return caps;
     }
-    
-    public static boolean getAlt(){
-        
+
+    public static boolean getAlt() {
+
         return alt;
     }
 }

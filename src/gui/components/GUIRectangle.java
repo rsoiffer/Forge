@@ -4,7 +4,7 @@ import graphics.Graphics2D;
 import util.Color4;
 import util.Vec2;
 
-public class GUIRectangle extends GUIComponent {
+public class GUIRectangle implements GUIComponent {
 
     private Vec2 pos;
     private Vec2 dim;

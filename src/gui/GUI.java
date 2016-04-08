@@ -7,6 +7,17 @@ import java.util.Arrays;
 public abstract class GUI {
 
     private boolean visible = false;
+    private final String name;
+    
+    public GUI(String n){
+        
+        name = n;
+    }
+    
+    public String getName(){
+        
+        return name;
+    }
 
     public boolean isOpen() {
         return visible;

@@ -2,14 +2,13 @@ package gui.components;
 
 import graphics.Graphics2D;
 import graphics.data.GLFont;
-import graphics.loading.FontContainer;
-import java.awt.Font;
+import static gui.TypingManager.getTypedSave;
 import java.util.ArrayList;
 import java.util.List;
 import org.newdawn.slick.Color;
 import util.Vec2;
 
-public class GUIText extends GUIComponent {
+public class GUIText implements GUIComponent {
 
     private static final char[] nextL = {' ', '-', ':', ';', ',', '.', '?', '!', ')', '}', ']', '%'};
     List<String> lines = new ArrayList();
@@ -18,14 +17,13 @@ public class GUIText extends GUIComponent {
     Vec2 pos;
     GLFont font;
 
-    public GUIText init(Vec2 d, Color c, Vec2 p, String t, GLFont f) {
+    public GUIText(Vec2 d, Color c, Vec2 p, String t, GLFont f) {
         dim = d;
         color = c;
         pos = p;
         lines.add(t);
         font = f;
         fixLines();
-        return this;
     }
 
     @Override
@@ -150,6 +148,8 @@ public class GUIText extends GUIComponent {
         for (int i = 0; i < Math.floor(dim.y / font.getHeight()) && i < lines.size(); i++) {
             Graphics2D.drawText(lines.get(i), "Console", pos.subtract(new Vec2(0, dim.y - font.getHeight() * i)), color);
         }
+        
+        Graphics2D.drawText(getTypedSave(), "Console", pos, color);
     }
 
 }

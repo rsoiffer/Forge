@@ -1,6 +1,6 @@
 package gui.components;
 
-public abstract class GUIComponent {
+public interface GUIComponent {
 
     public abstract void draw();
 
