@@ -44,7 +44,7 @@ public abstract class Window3D {
             //3D
             glEnable(GL_DEPTH_TEST);
             glDepthFunc(GL_LEQUAL);
-            glAlphaFunc(GL_GREATER, 0.5f);
+            glAlphaFunc(GL_GREATER, .01f);
 
             glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
