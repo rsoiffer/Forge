@@ -1,6 +1,8 @@
 package gui;
 
 import graphics.Window3D;
+import graphics.data.GLFont;
+import graphics.loading.FontContainer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +10,7 @@ import java.util.Map;
 public class GUIController {
 
     private static final Map<String, GUI> guis = new HashMap();
+    public final static GLFont FONT = FontContainer.get("Console");
 
     public static void add(GUI... gui) {
         Arrays.asList(gui).forEach(g -> {
@@ -24,7 +27,7 @@ public class GUIController {
     public static void draw() {
         Window3D.guiProjection();
         guis.values().forEach(g -> {
-            if (g.isOpen()) {
+            if (g.isVisible()) {
                 g.draw();
             }
         });
