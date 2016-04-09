@@ -7,6 +7,7 @@ package gui;
 
 import engine.Input;
 import engine.Signal;
+import gui.types.TextInput;
 import java.awt.Toolkit;
 import static java.awt.event.KeyEvent.VK_CAPS_LOCK;
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public class TypingManager extends Signal<Boolean> {
     private static final Map<Integer, Signal<Boolean>> prevStates = new HashMap();
     private static TypingManager typeM;
     static String buffer = "";
-    private static Console con = null;
+    private static TextInput input = null;
 
     private static Signal<Boolean> shift = new Signal(false);
     private static Signal<Boolean> ctrl = new Signal(false);
@@ -67,30 +68,14 @@ public class TypingManager extends Signal<Boolean> {
         }
     }
 
-    public static void init(String c, int key) {
+    public static void init(TextInput g) {
 
-        typeM = new TypingManager(c);
-
-        Input.whenKey(key, true).onEvent(() -> {
-
-            con.open();
-            Mouse.setGrabbed(false);
-            typeM.set(true);
-        });
-
-        Input.whenKey(Keyboard.KEY_BACKSLASH, true).onEvent(() -> {
-
-            con.open();
-            Mouse.setGrabbed(false);
-            typeM.set(true);
-            buffer = "\\";
-        });
+            typeM = new TypingManager(g);
     }
 
-    private TypingManager(String console) {
+    private TypingManager(TextInput ti) {
 
         super(false);
-        setConsole(console);
 
         this.filter(x -> x == true).onEvent(() -> {
 
@@ -101,7 +86,7 @@ public class TypingManager extends Signal<Boolean> {
 
             Input.whenKey(1, true).onEvent(() -> { //Esc code 1
 
-                con.close();
+                input.setVisible(false);
                 Mouse.setGrabbed(true);
                 typeM.set(false);
                 buffer = "";
@@ -109,10 +94,7 @@ public class TypingManager extends Signal<Boolean> {
 
             Input.whenKey(Keyboard.KEY_RETURN, true).onEvent(() -> {
 
-                if (con != null) {
-
-                    con.outputText.appendLine(getTyped());
-                }
+                input.getTextInput().send();
             });
 
             shift = Input.keySignal(Keyboard.KEY_LSHIFT);
@@ -144,28 +126,47 @@ public class TypingManager extends Signal<Boolean> {
             prevStates.clear();
         });
     }
-
-    public static void setConsole(String n) {
-
-        GUIController.getGUIList().forEach((s, g) -> {
-
-            if (g != null && g instanceof Console && g.getName() != null && g.getName().equals(n)) {
-
-                con = (Console) g;
-            }
-        });
+    
+    public static void typing(TextInput ti, boolean b){
+        
+        if(ti != null){
+            
+            input = ti;
+            typeM.set(b);
+        }
+    }
+    
+    public static void typing(TextInput ti, boolean b, String s){
+        
+        if(ti != null){
+            
+            input = ti;
+            typeM.set(b);
+            buffer = s;
+        }
     }
 
-    private static String getTyped() {
+    public static boolean isTyping() {
 
-        String s = buffer;
+        return typeM.get();
+    }
+
+    public static void clearTyped() {
+
         buffer = "";
-        return s;
     }
 
     public static String getTypedSave() {
 
         return buffer;
+    }
+    
+    public static void typingLimit(int lim){
+        
+        if(buffer.length() > lim){
+            
+            buffer = buffer.substring(0, lim);
+        }
     }
 
     public static void addChar(char c) {
