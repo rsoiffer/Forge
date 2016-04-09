@@ -149,6 +149,19 @@ public abstract class Graphics3D {
         FontContainer.get(font).drawString((float) pos.x, (float) pos.y, s, c);
     }
 
+    public static void fillEllipse(Vec3 pos, Vec2 size, Color4 color, double detail) {
+        glDisable(GL_TEXTURE_2D);
+        color.glColor();
+        glBegin(GL_TRIANGLE_FAN);
+        {
+            pos.glVertex();
+            for (double angle = 0; angle <= detail; angle++) {
+                glVertex3d(pos.x + size.x * Math.cos(angle / detail * Math.PI * 2), pos.y + size.y * Math.sin(angle / detail * Math.PI * 2), pos.z);
+            }
+        }
+        glEnd();
+    }
+
     public static void fillRect(Vec3 pos, Vec2 size, double tilt, double angle, Color4 color) {
         glPushMatrix();
         glDisable(GL_TEXTURE_2D);

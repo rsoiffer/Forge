@@ -1,5 +1,6 @@
 package graphics;
 
+import engine.Core;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -15,6 +16,10 @@ public abstract class Camera {
     public static void calculateViewport(double aspectRatio) {
         int w = Display.getWidth();
         int h = Display.getHeight();
+        if (Core.is3D) {
+            glViewport(0, 0, w, h);
+            return;
+        }
         int vw, vh;
         if (w > h * aspectRatio) {
             vh = h;

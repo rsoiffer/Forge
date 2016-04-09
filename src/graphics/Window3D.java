@@ -70,7 +70,7 @@ public abstract class Window3D {
     }
 
     public static void resetProjection() {
-        Camera.setProjection3D(fov, aspectRatio, pos, pos.add(facing.toVec3()), UP);
+        Camera.setProjection3D(fov, (double) Display.getWidth() / Display.getHeight(), pos, pos.add(facing.toVec3()), UP);
     }
 
     public static void update() {
