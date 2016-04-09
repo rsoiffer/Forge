@@ -4,11 +4,10 @@ import gui.components.GUIComponent;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class GUI {
+public abstract class GUI {
 
     private boolean visible = false;
     private final String name;
-    protected final ArrayList<GUIComponent> components = new ArrayList();
     
     public GUI(String n){
         
@@ -20,13 +19,19 @@ public class GUI {
         return name;
     }
 
-    public boolean isVisible() {
+    public boolean isOpen() {
         return visible;
     }
 
     public void setVisible(boolean b) {
         visible = b;
     }
+
+    public abstract void open();
+
+    public abstract void close();
+
+    protected final ArrayList<GUIComponent> components = new ArrayList();
 
     public GUI add(GUIComponent... comp) {
         Arrays.asList(comp).forEach(c -> {
@@ -45,19 +50,8 @@ public class GUI {
         return components;
     }
 
-    public void update(){
-        
-        components.forEach(c -> {
-            
-            c.update();
-        });
-    }
+    public abstract void update();
 
-    public void draw(){
-        
-        components.forEach(c -> {
-            
-            c.draw();
-        });
-    }
+    public abstract void draw();
+
 }
