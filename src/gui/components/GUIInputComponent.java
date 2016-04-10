@@ -12,14 +12,14 @@ import util.Vec2;
  *
  * @author Cruz
  */
-public abstract class GUIInputComponent extends GUIComponent<ComponentInput>{
-    
-    protected String buffer;
-    
+public abstract class GUIInputComponent<B> extends GUIComponent<ComponentInput> {
+
+    protected B buffer;
+
     public GUIInputComponent(String n, ComponentInput g, Vec2 p, Vec2 d) {
-        
+
         super(n, g, p, d);
     }
-    
+
     public abstract void send();
 }

@@ -7,7 +7,6 @@ package gui.premadeGuis;
 
 import engine.Input;
 import static gui.GUIController.FONT;
-import gui.components.GUIInputComponent;
 import gui.components.GUICommandField;
 import gui.components.GUIListOutputField;
 import gui.components.GUIPanel;
@@ -18,7 +17,7 @@ import org.newdawn.slick.Color;
 import util.Color4;
 import util.Vec2;
 import static gui.TypingManager.typing;
-import static gui.TypingManager.typing;
+import gui.components.GUIInputComponent;
 
 /**
  *
@@ -61,7 +60,15 @@ public class Chat extends ComponentInput {
     @Override
     public GUICommandField getTextInput() {
 
-        return (GUICommandField) input;
+        for(GUIInputComponent gcf : input){
+            
+            if(gcf.getName().equals("Input Field")){
+                
+                return (GUICommandField) gcf;
+            }
+        }
+        
+        return null;
     }
 
     @Override

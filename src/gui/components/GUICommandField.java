@@ -19,7 +19,7 @@ import static gui.GUIController.FONT;
  *
  * @author Cruz
  */
-public class GUICommandField extends GUIInputComponent {
+public class GUICommandField extends GUIInputComponent<String>  {
 
     private int maxChar;
     private Color color;
