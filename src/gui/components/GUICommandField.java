@@ -10,7 +10,7 @@ import static gui.TypingManager.clearTyped;
 import static gui.TypingManager.getTypedSave;
 import static gui.TypingManager.isTyping;
 import static gui.TypingManager.typingLimit;
-import gui.types.TextInput;
+import gui.types.ComponentInput;
 import org.newdawn.slick.Color;
 import util.Vec2;
 import static gui.GUIController.FONT;
@@ -24,7 +24,7 @@ public class GUICommandField extends GUIInputComponent {
     private int maxChar;
     private Color color;
 
-    public GUICommandField(String n, TextInput g, Vec2 p, double d, Color c) {
+    public GUICommandField(String n, ComponentInput g, Vec2 p, double d, Color c) {
 
         super(n, g, p, new Vec2(0, d));
         maxChar = (int) (d / FONT.getWidth(" "));

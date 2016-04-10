@@ -8,22 +8,26 @@ package gui.types;
 import gui.GUI;
 import gui.components.GUIInputComponent;
 import gui.components.GUICommandField;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
  * @author Cruz
  */
-public abstract class TextInput extends GUI{
+public abstract class ComponentInput extends GUI{
 
-    protected GUIInputComponent input;
+    protected List<GUIInputComponent> input;
     
-    public TextInput(String n, GUIInputComponent gip) {
+    public ComponentInput(String n, GUIInputComponent... gip) {
         
         super(n);
-        input = gip;
+        input = new ArrayList();
+        input.addAll(Arrays.asList(gip));
     }
     
-    public abstract void recieve(String name, String text);
+    public abstract void recieve(String name, Object info);
     
     public abstract GUICommandField getTextInput();
 }

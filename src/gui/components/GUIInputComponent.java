@@ -5,18 +5,18 @@
  */
 package gui.components;
 
-import gui.types.TextInput;
+import gui.types.ComponentInput;
 import util.Vec2;
 
 /**
  *
  * @author Cruz
  */
-public abstract class GUIInputComponent extends GUIComponent<TextInput>{
+public abstract class GUIInputComponent extends GUIComponent<ComponentInput>{
     
     protected String buffer;
     
-    public GUIInputComponent(String n, TextInput g, Vec2 p, Vec2 d) {
+    public GUIInputComponent(String n, ComponentInput g, Vec2 p, Vec2 d) {
         
         super(n, g, p, d);
     }

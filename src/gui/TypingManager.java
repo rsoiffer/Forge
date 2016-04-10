@@ -7,7 +7,7 @@ package gui;
 
 import engine.Input;
 import engine.Signal;
-import gui.types.TextInput;
+import gui.types.ComponentInput;
 import java.awt.Toolkit;
 import static java.awt.event.KeyEvent.VK_CAPS_LOCK;
 import java.util.HashMap;
@@ -24,7 +24,7 @@ public class TypingManager extends Signal<Boolean> {
     private static final Map<Integer, Signal<Boolean>> prevStates = new HashMap();
     private static TypingManager typeM;
     static String buffer = "";
-    private static TextInput input = null;
+    private static ComponentInput input = null;
 
     private static Signal<Boolean> shift = new Signal(false);
     private static Signal<Boolean> ctrl = new Signal(false);
@@ -68,12 +68,12 @@ public class TypingManager extends Signal<Boolean> {
         }
     }
 
-    public static void init(TextInput g) {
+    public static void init(ComponentInput g) {
 
             typeM = new TypingManager(g);
     }
 
-    private TypingManager(TextInput ti) {
+    private TypingManager(ComponentInput ti) {
 
         super(false);
 
@@ -127,7 +127,7 @@ public class TypingManager extends Signal<Boolean> {
         });
     }
     
-    public static void typing(TextInput ti, boolean b){
+    public static void typing(ComponentInput ti, boolean b){
         
         if(ti != null){
             
@@ -136,7 +136,7 @@ public class TypingManager extends Signal<Boolean> {
         }
     }
     
-    public static void typing(TextInput ti, boolean b, String s){
+    public static void typing(ComponentInput ti, boolean b, String s){
         
         if(ti != null){
             
