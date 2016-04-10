@@ -29,5 +29,5 @@ public abstract class ComponentInput extends GUI{
     
     public abstract void recieve(String name, Object info);
     
-    public abstract GUICommandField getTextInput();
+    public abstract GUIInputComponent getTextInput();
 }

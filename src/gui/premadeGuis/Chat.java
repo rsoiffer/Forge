@@ -58,13 +58,13 @@ public class Chat extends ComponentInput {
     }
 
     @Override
-    public GUICommandField getTextInput() {
+    public GUIInputComponent getTextInput() {
 
         for(GUIInputComponent gcf : input){
             
             if(gcf.getName().equals("Input Field")){
                 
-                return (GUICommandField) gcf;
+                return gcf;
             }
         }
         
