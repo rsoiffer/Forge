@@ -1,6 +1,8 @@
 package util;
 
 import java.nio.FloatBuffer;
+import java.util.function.BinaryOperator;
+import java.util.function.UnaryOperator;
 import static org.lwjgl.opengl.GL11.glTexCoord2d;
 import static org.lwjgl.opengl.GL11.glVertex2d;
 
@@ -71,7 +73,7 @@ public class Vec2 {
     public boolean equals(Object o) {
         if (o instanceof Vec2) {
             Vec2 v = (Vec2) o;
-            return (x - v.x) <= tol && (y - v.y) <= tol;
+            return Math.abs(x - v.x) <= tol && Math.abs(y - v.y) <= tol;
         }
         return false;
     }
@@ -118,6 +120,14 @@ public class Vec2 {
             return new Vec2(1.0, 0.0);
         }
         return multiply(1 / len);
+    }
+
+    public Vec2 perComponent(UnaryOperator<Double> u) {
+        return new Vec2(u.apply(x), u.apply(y));
+    }
+
+    public Vec2 perComponent(Vec2 other, BinaryOperator<Double> u) {
+        return new Vec2(u.apply(x, other.x), u.apply(y, other.y));
     }
 
     public int quadrant(Vec2 other) {

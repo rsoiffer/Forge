@@ -88,11 +88,11 @@ public class Connection {
         handlerMap.put((byte) id, handler);
     }
 
-    public void sendMessage(int id, Object... data) {
+    public synchronized void sendMessage(int id, Object... data) {
         sendMessage(id, () -> write(data));
     }
 
-    public void sendMessage(int id, Runnable printer) {
+    public synchronized void sendMessage(int id, Runnable printer) {
         //System.out.println("Sent message: " + id);
         if (!closed) {
             try {
@@ -104,7 +104,7 @@ public class Connection {
         }
     }
 
-    public void write(Object... a) {
+    public synchronized void write(Object... a) {
         if (!closed) {
             try {
                 for (Object o : a) {
