@@ -30,6 +30,10 @@ public class Connection {
             output = new DataOutputStream(socket.getOutputStream());
 
             new Thread(() -> {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                }
                 while (!closed) {
                     try {
                         byte id = input.readByte();
