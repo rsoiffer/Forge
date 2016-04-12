@@ -7,7 +7,10 @@ package gui;
 
 import engine.Input;
 import engine.Signal;
-import gui.types.ComponentInput;
+import gui.types.GUIInputComponent;
+import gui.types.ComponentInputGUI;
+import gui.types.GUIButtonComponent;
+import gui.types.GUITypingComponent;
 import java.awt.Toolkit;
 import static java.awt.event.KeyEvent.VK_CAPS_LOCK;
 import java.util.HashMap;
@@ -24,7 +27,8 @@ public class TypingManager extends Signal<Boolean> {
     private static final Map<Integer, Signal<Boolean>> prevStates = new HashMap();
     private static TypingManager typeM;
     static String buffer = "";
-    private static ComponentInput input = null;
+    private static ComponentInputGUI input = null;
+    private static GUIInputComponent comp = null;
 
     private static Signal<Boolean> shift = new Signal(false);
     private static Signal<Boolean> ctrl = new Signal(false);
@@ -68,12 +72,7 @@ public class TypingManager extends Signal<Boolean> {
         }
     }
 
-    public static void init(ComponentInput g) {
-
-            typeM = new TypingManager(g);
-    }
-
-    private TypingManager(ComponentInput ti) {
+    private TypingManager(ComponentInputGUI ti) {
 
         super(false);
 
@@ -83,6 +82,18 @@ public class TypingManager extends Signal<Boolean> {
             prevStates.putAll(in);
             in.clear();
             in.putAll(convert);
+
+            Input.whenMouse(0, true).onEvent(() -> {
+
+                compClose(comp);
+                
+                if (input != null) {
+
+                    GUIInputComponent gip = input.mousePressed(Input.getMouse());
+                    comp = gip;
+                    compOpen(comp);
+                }
+            });
 
             Input.whenKey(1, true).onEvent(() -> { //Esc code 1
 
@@ -94,7 +105,10 @@ public class TypingManager extends Signal<Boolean> {
 
             Input.whenKey(Keyboard.KEY_RETURN, true).onEvent(() -> {
 
-                input.getTextInput().send();
+                if (comp != null) {
+
+                    comp.send();
+                }
             });
 
             shift = Input.keySignal(Keyboard.KEY_LSHIFT);
@@ -125,24 +139,81 @@ public class TypingManager extends Signal<Boolean> {
             in.putAll(prevStates);
             prevStates.clear();
         });
+
+        comp = input.getDefaultComponent();
+        typeM = this;
     }
-    
-    public static void typing(ComponentInput ti, boolean b){
-        
-        if(ti != null){
-            
-            input = ti;
-            typeM.set(b);
+
+    private static void compOpen(GUIInputComponent gip) {
+
+        if (gip != null) {
+
+            if (gip instanceof GUIButtonComponent) {
+
+                gip.send();
+            } else if (gip instanceof GUITypingComponent) {
+
+                ((GUITypingComponent) gip).DrawCursor(true);
+            }
         }
     }
-    
-    public static void typing(ComponentInput ti, boolean b, String s){
-        
-        if(ti != null){
-            
+
+    private static void compClose(GUIInputComponent gip) {
+
+        if (gip != null) {
+
+            if (gip instanceof GUITypingComponent) {
+
+                ((GUITypingComponent) gip).DrawCursor(false);
+            }
+        }
+    }
+
+    public static void typing(ComponentInputGUI ti, boolean b) {
+
+        compClose(comp);
+
+        if (ti != null) {
+
             input = ti;
             typeM.set(b);
+            comp = input.getDefaultComponent();
+
+            if (b) {
+                
+                compOpen(comp);
+            }
+        }
+    }
+
+    public static void typing(boolean b) {
+
+        typeM.set(b);
+
+        if (b) {
+
+            compOpen(comp);
+        } else {
+
+            compClose(comp);
+        }
+    }
+
+    public static void typing(ComponentInputGUI ti, boolean b, String s) {
+
+        compClose(comp);
+        
+        if (ti != null) {
+
+            input = ti;
+            typeM.set(b);
+            comp = input.getDefaultComponent();
             buffer = s;
+            
+            if (b) {
+                
+                compOpen(comp);
+            }
         }
     }
 
@@ -156,15 +227,15 @@ public class TypingManager extends Signal<Boolean> {
         buffer = "";
     }
 
-    public static String getTypedSave() {
+    public static String getTyped() {
 
         return buffer;
     }
-    
-    public static void typingLimit(int lim){
-        
-        if(buffer.length() > lim){
-            
+
+    public static void typingLimit(int lim) {
+
+        if (buffer.length() > lim) {
+
             buffer = buffer.substring(0, lim);
         }
     }
