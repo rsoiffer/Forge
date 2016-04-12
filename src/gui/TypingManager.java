@@ -113,7 +113,8 @@ public class TypingManager extends Signal<Boolean> {
                 }
             });
 
-            shift = Input.keySignal(Keyboard.KEY_LSHIFT);
+            shift = Input.keySignal(Keyboard.KEY_LSHIFT).combineLatest(
+                    Input.keySignal(Keyboard.KEY_RSHIFT), (b1, b2) -> b1 || b2);
 
             alt = Input.keySignal(56); //Alt code 56
 

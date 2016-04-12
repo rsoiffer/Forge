@@ -65,7 +65,8 @@ public class GUIListOutputField extends GUIComponent<GUI> {
         if(lines.get(0).length() > (int) printDim.x){
             
             int index = indexOfLine((int) printDim.x);
-            lines.set(0, lines.get(0).substring(0, index) + "\n" + lines.get(0).substring(index));
+            lines.set(0, lines.get(0).substring(0, index) + "\n" + 
+                    lines.get(0).substring(lines.get(0).charAt(index) == ' ' ? (index + 1) : index));
         }
         
         if (!lines.get(0).contains("\n")) {
