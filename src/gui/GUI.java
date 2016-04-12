@@ -1,6 +1,6 @@
 package gui;
 
-import gui.types.GUIComponent;
+import gui.components.GUIComponent;
 import java.util.ArrayList;
 import java.util.Arrays;
 

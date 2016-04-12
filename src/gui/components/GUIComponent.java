@@ -1,4 +1,4 @@
-package gui.types;
+package gui.components;
 
 import gui.GUI;
 import util.Vec2;
@@ -32,10 +32,5 @@ public abstract class GUIComponent<G extends GUI> {
 
     public Vec2 getDim() {
         return dim;
-    }
-    
-    public boolean containsClick(Vec2 click){
-        
-        return click.containedBy(pos, pos.add(dim));
     }
 }

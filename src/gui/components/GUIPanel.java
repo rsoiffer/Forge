@@ -1,6 +1,5 @@
 package gui.components;
 
-import gui.types.GUIComponent;
 import graphics.Graphics2D;
 import gui.GUI;
 import util.Color4;

@@ -10,23 +10,20 @@ import static gui.GUIController.FONT;
 import gui.components.GUICommandField;
 import gui.components.GUIListOutputField;
 import gui.components.GUIPanel;
-import gui.types.ComponentInputGUI;
+import gui.types.ComponentInput;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Color;
 import util.Color4;
 import util.Vec2;
-import gui.types.GUIInputComponent;
 import static gui.TypingManager.typing;
-import static gui.TypingManager.typing;
-import static gui.TypingManager.typing;
-import static gui.TypingManager.typing;
+import gui.components.GUIInputComponent;
 
 /**
  *
  * @author Cruz
  */
-public class Chat extends ComponentInputGUI {
+public class Chat extends ComponentInput {
 
     private GUIListOutputField output;
     private final Vec2 pos;
@@ -40,7 +37,7 @@ public class Chat extends ComponentInputGUI {
         GUIPanel out = new GUIPanel("Output Panel", pos, dim.subtract(new Vec2(0, FONT.getHeight())), Color4.gray(.3).withA(.5));
         GUIPanel in = new GUIPanel("Input Panel", pos.add(new Vec2(0, dim.y - FONT.getHeight())), dim.withY(FONT.getHeight()), Color4.BLACK.withA(.5));
         output = new GUIListOutputField("Output Field", this, pos.add(new Vec2(0, dim.y - FONT.getHeight())), dim.subtract(new Vec2(0, 2 * FONT.getHeight())), Color.white);
-        inputs.add(new GUICommandField("Input Field", this, pos.add(new Vec2(0, dim.y)), dim.x, Color.white));
+        input.add(new GUICommandField("Input Field", this, pos.add(new Vec2(0, dim.y)), dim.x, Color.white));
         
         components.add(out);
         components.add(in);
@@ -61,9 +58,9 @@ public class Chat extends ComponentInputGUI {
     }
 
     @Override
-    public GUIInputComponent getDefaultComponent() {
+    public GUIInputComponent getTextInput() {
 
-        for(GUIInputComponent gcf : inputs){
+        for(GUIInputComponent gcf : input){
             
             if(gcf.getName().equals("Input Field")){
                 
@@ -85,7 +82,7 @@ public class Chat extends ComponentInputGUI {
         
         super.update();
         output.update();
-        inputs.forEach(i -> i.update());
+        input.forEach(i -> i.update());
     }
     
     @Override
@@ -93,6 +90,6 @@ public class Chat extends ComponentInputGUI {
         
         super.draw();
         output.draw();
-        inputs.forEach(i -> i.draw());
+        input.forEach(i -> i.draw());
     }
 }
