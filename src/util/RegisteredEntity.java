@@ -10,9 +10,7 @@ public abstract class RegisteredEntity extends AbstractEntity {
 
     @Override
     public void create() {
-        if (!ALL.containsKey(getClass())) {
-            ALL.put(getClass(), new LinkedList());
-        }
+        ALL.putIfAbsent(getClass(), new LinkedList());
         ALL.get(getClass()).add(this);
         createInner();
     }
@@ -31,7 +29,7 @@ public abstract class RegisteredEntity extends AbstractEntity {
 
     public static <T extends RegisteredEntity> List<T> getAll(Class<T> c) {
         if (ALL.containsKey(c)) {
-            return (List) ALL.get(c);
+            return new ArrayList(ALL.get(c));
         } else {
             return new LinkedList();
         }
