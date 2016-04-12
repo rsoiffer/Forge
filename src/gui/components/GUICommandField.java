@@ -6,15 +6,15 @@
 package gui.components;
 
 import graphics.Graphics2D;
+import static gui.GUIController.FONT;
 import static gui.TypingManager.clearTyped;
+import static gui.TypingManager.getTyped;
 import static gui.TypingManager.isTyping;
 import static gui.TypingManager.typingLimit;
 import gui.types.ComponentInputGUI;
+import gui.types.GUITypingComponent;
 import org.newdawn.slick.Color;
 import util.Vec2;
-import static gui.GUIController.FONT;
-import static gui.TypingManager.getTyped;
-import gui.types.GUITypingComponent;
 import static util.Vec2.ZERO;
 
 /**
@@ -48,9 +48,9 @@ public class GUICommandField extends GUITypingComponent {
     public void draw() {
 
         Graphics2D.drawText(buffer, "Console", pos, color);
-        
+
         if (drawCur) {
-            
+
             Vec2 cur = cursor.add(pos).multiply(new Vec2(FONT.getWidth(" "), 0));
             Graphics2D.drawLine(cur, cur.add(new Vec2(0, FONT.getHeight())));
         }
@@ -74,6 +74,7 @@ public class GUICommandField extends GUITypingComponent {
             clearTyped();
             int l = b.length();
             buffer = buffer.substring(0, (int) cursor.x) + b + buffer.substring((int) cursor.x);
+            cursor = cursor.add(new Vec2(l, 0));
 
             if (buffer.length() > maxChar) {
 

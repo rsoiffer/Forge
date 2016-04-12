@@ -7,9 +7,9 @@ package gui;
 
 import engine.Input;
 import engine.Signal;
-import gui.types.GUIInputComponent;
 import gui.types.ComponentInputGUI;
 import gui.types.GUIButtonComponent;
+import gui.types.GUIInputComponent;
 import gui.types.GUITypingComponent;
 import java.awt.Toolkit;
 import static java.awt.event.KeyEvent.VK_CAPS_LOCK;
@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import util.Vec2;
 
 /**
  *
@@ -72,9 +73,10 @@ public class TypingManager extends Signal<Boolean> {
         }
     }
 
-    private TypingManager(ComponentInputGUI ti) {
+    public TypingManager(ComponentInputGUI ti) {
 
         super(false);
+        input = ti;
 
         this.filter(x -> x == true).onEvent(() -> {
 
@@ -86,7 +88,7 @@ public class TypingManager extends Signal<Boolean> {
             Input.whenMouse(0, true).onEvent(() -> {
 
                 compClose(comp);
-                
+
                 if (input != null) {
 
                     GUIInputComponent gip = input.mousePressed(Input.getMouse());
@@ -123,6 +125,11 @@ public class TypingManager extends Signal<Boolean> {
                 if (buffer.length() > 0) {
 
                     buffer = buffer.substring(0, buffer.length() - 1);
+
+                    if (comp instanceof GUITypingComponent) {
+
+                        ((GUITypingComponent) comp).moveCursor(new Vec2(-1, 0));
+                    }
                 }
             });
 
@@ -180,7 +187,7 @@ public class TypingManager extends Signal<Boolean> {
             comp = input.getDefaultComponent();
 
             if (b) {
-                
+
                 compOpen(comp);
             }
         }
@@ -202,16 +209,16 @@ public class TypingManager extends Signal<Boolean> {
     public static void typing(ComponentInputGUI ti, boolean b, String s) {
 
         compClose(comp);
-        
+
         if (ti != null) {
 
             input = ti;
             typeM.set(b);
             comp = input.getDefaultComponent();
             buffer = s;
-            
+
             if (b) {
-                
+
                 compOpen(comp);
             }
         }
