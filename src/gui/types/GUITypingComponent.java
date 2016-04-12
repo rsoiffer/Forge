@@ -5,6 +5,8 @@
  */
 package gui.types;
 
+import util.Color4;
+import static util.Color4.BLACK;
 import util.Vec2;
 import static util.Vec2.ZERO;
 
@@ -16,12 +18,22 @@ public abstract class GUITypingComponent extends GUIInputComponent<String> {
 
     protected Vec2 cursor;
     protected boolean drawCur;
+    protected Color4 curCol;
 
     public GUITypingComponent(String n, ComponentInputGUI g, Vec2 p, Vec2 d) {
 
         super(n, g, p, d);
         cursor = ZERO;
         drawCur = false;
+        curCol = BLACK;
+    }
+    
+    public GUITypingComponent(String n, ComponentInputGUI g, Vec2 p, Vec2 d, Color4 cc) {
+
+        super(n, g, p, d);
+        cursor = ZERO;
+        drawCur = false;
+        curCol = cc;
     }
 
     public void DrawCursor(boolean dc) {
@@ -44,18 +56,24 @@ public abstract class GUITypingComponent extends GUIInputComponent<String> {
         return cursor;
     }
 
-    public void moveCursor(Vec2 s) {
-
-        cursor = cursor.add(s);
-
-        if (cursor.x < 0) {
-
-            cursor = cursor.withX(0);
-        }
-
-        if (cursor.y < 0) {
-
-            cursor = cursor.withY(0);
-        }
+    public void setCursorColor(Color4 cc) {
+        this.curCol = cc;
     }
+
+    public Color4 getCursorColor() {
+        
+        return curCol;
+    }
+    
+    public abstract void backspace();
+    
+    public abstract void tab();
+    
+    public abstract void up();
+    
+    public abstract void down();
+    
+    public abstract void left();
+    
+    public abstract void right();
 }

@@ -95,7 +95,7 @@ public class GUIListOutputField extends GUIComponent<GUI> {
             
             if(isLineChar(lines.get(0).charAt(n))){
                 
-                return n;
+                return (n >= printDim.x) ? n : ++n;
             }
             
             n--;

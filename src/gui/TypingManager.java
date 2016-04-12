@@ -122,20 +122,50 @@ public class TypingManager extends Signal<Boolean> {
 
             Input.whenKey(14, true).onEvent(() -> { //Backspace code 14
 
-                if (buffer.length() > 0) {
+                if (comp instanceof GUITypingComponent) {
 
-                    buffer = buffer.substring(0, buffer.length() - 1);
-
-                    if (comp instanceof GUITypingComponent) {
-
-                        ((GUITypingComponent) comp).moveCursor(new Vec2(-1, 0));
-                    }
+                    ((GUITypingComponent) comp).backspace();
                 }
             });
 
             Input.whenKey(Keyboard.KEY_TAB, true).onEvent(() -> {
 
-                buffer = "   " + buffer;
+                if (comp instanceof GUITypingComponent) {
+
+                    ((GUITypingComponent) comp).tab();
+                }
+            });
+
+            Input.whenKey(Keyboard.KEY_UP, true).onEvent(() -> {
+
+                if (comp instanceof GUITypingComponent) {
+
+                    ((GUITypingComponent) comp).up();
+                }
+            });
+            
+            Input.whenKey(Keyboard.KEY_DOWN, true).onEvent(() -> {
+
+                if (comp instanceof GUITypingComponent) {
+
+                    ((GUITypingComponent) comp).down();
+                }
+            });
+            
+            Input.whenKey(Keyboard.KEY_LEFT, true).onEvent(() -> {
+
+                if (comp instanceof GUITypingComponent) {
+
+                    ((GUITypingComponent) comp).left();
+                }
+            });
+            
+            Input.whenKey(Keyboard.KEY_RIGHT, true).onEvent(() -> {
+
+                if (comp instanceof GUITypingComponent) {
+
+                    ((GUITypingComponent) comp).right();
+                }
             });
         });
 

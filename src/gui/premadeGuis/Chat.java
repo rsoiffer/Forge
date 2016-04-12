@@ -40,7 +40,7 @@ public class Chat extends ComponentInputGUI {
         GUIPanel out = new GUIPanel("Output Panel", pos, dim.subtract(new Vec2(0, FONT.getHeight())), Color4.gray(.3).withA(.5));
         GUIPanel in = new GUIPanel("Input Panel", pos.add(new Vec2(0, dim.y - FONT.getHeight())), dim.withY(FONT.getHeight()), Color4.BLACK.withA(.5));
         output = new GUIListOutputField("Output Field", this, pos.add(new Vec2(0, dim.y - FONT.getHeight())), dim.subtract(new Vec2(0, 2 * FONT.getHeight())), Color.white);
-        inputs.add(new GUICommandField("Input Field", this, pos.add(new Vec2(0, dim.y)), dim.x, Color.white));
+        inputs.add(new GUICommandField("Input Field", this, pos.add(new Vec2(0, dim.y)), dim.x, Color.white, Color4.WHITE));
         
         components.add(out);
         components.add(in);
@@ -94,5 +94,10 @@ public class Chat extends ComponentInputGUI {
         super.draw();
         output.draw();
         inputs.forEach(i -> i.draw());
+    }
+    
+    public void addChat(String s){
+        
+        output.appendLine(s);
     }
 }
