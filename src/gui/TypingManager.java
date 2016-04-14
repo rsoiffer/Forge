@@ -9,15 +9,16 @@ import engine.Input;
 import engine.Signal;
 import gui.types.ComponentInputGUI;
 import gui.types.GUIButtonComponent;
+import gui.types.GUIComponent;
 import gui.types.GUIInputComponent;
 import gui.types.GUITypingComponent;
 import java.awt.Toolkit;
 import static java.awt.event.KeyEvent.VK_CAPS_LOCK;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import util.Vec2;
 
 /**
  *
@@ -91,8 +92,17 @@ public class TypingManager extends Signal<Boolean> {
 
                 if (input != null) {
 
-                    GUIInputComponent gip = input.mousePressed(Input.getMouse());
-                    comp = gip;
+                    List<GUIComponent> gips = input.mousePressed(Input.getMouse());
+                    comp = null;
+
+                    for (GUIComponent gip : gips) {
+
+                        if (gip instanceof GUIInputComponent) {
+
+                            comp = (GUIInputComponent) gip;
+                        }
+                    }
+                    
                     compOpen(comp);
                 }
             });
@@ -131,41 +141,56 @@ public class TypingManager extends Signal<Boolean> {
 
             Input.whenKey(Keyboard.KEY_TAB, true).onEvent(() -> {
 
-                if (comp instanceof GUITypingComponent) {
+                if (comp != null) {
 
-                    ((GUITypingComponent) comp).tab();
+                    if (comp instanceof GUITypingComponent) {
+
+                        ((GUITypingComponent) comp).tab();
+                    }
                 }
             });
 
             Input.whenKey(Keyboard.KEY_UP, true).onEvent(() -> {
 
-                if (comp instanceof GUITypingComponent) {
+                if (comp != null) {
 
-                    ((GUITypingComponent) comp).up();
+                    if (comp instanceof GUITypingComponent) {
+
+                        ((GUITypingComponent) comp).up();
+                    }
                 }
             });
-            
+
             Input.whenKey(Keyboard.KEY_DOWN, true).onEvent(() -> {
+                
+                if (comp != null) {
+                    
+                    if (comp instanceof GUITypingComponent) {
 
-                if (comp instanceof GUITypingComponent) {
-
-                    ((GUITypingComponent) comp).down();
+                        ((GUITypingComponent) comp).down();
+                    }
                 }
             });
-            
+
             Input.whenKey(Keyboard.KEY_LEFT, true).onEvent(() -> {
+                
+                if (comp != null) {
+                    
+                    if (comp instanceof GUITypingComponent) {
 
-                if (comp instanceof GUITypingComponent) {
-
-                    ((GUITypingComponent) comp).left();
+                        ((GUITypingComponent) comp).left();
+                    }
                 }
             });
-            
+
             Input.whenKey(Keyboard.KEY_RIGHT, true).onEvent(() -> {
+                
+                if (comp != null) {
+                    
+                    if (comp instanceof GUITypingComponent) {
 
-                if (comp instanceof GUITypingComponent) {
-
-                    ((GUITypingComponent) comp).right();
+                        ((GUITypingComponent) comp).right();
+                    }
                 }
             });
         });

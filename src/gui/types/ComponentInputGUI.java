@@ -26,17 +26,27 @@ public abstract class ComponentInputGUI extends GUI{
         inputs.addAll(Arrays.asList(gip));
     }
     
-    public GUIInputComponent mousePressed(Vec2 p){
+    public List<GUIComponent> mousePressed(Vec2 p){
         
-        for (GUIInputComponent gip : inputs) {
+        List<GUIComponent> cl = new ArrayList();
+        
+        for (GUIComponent gip : components) {
             
             if(gip.containsClick(p)){
                 
-                return gip;
+                cl.add(gip);
             }
         }
         
-        return null;
+        for (GUIInputComponent gip : inputs) {
+                
+            if(gip.containsClick(p)){
+            
+                cl.add(gip);
+            }
+        }
+        
+        return cl;
     }
     
     public abstract void recieve(String name, Object info);

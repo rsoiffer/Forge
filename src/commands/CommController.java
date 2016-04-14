@@ -63,6 +63,7 @@ public class CommController {
                 if (comm != null) {
 
                     List<String> args = getCommandArgs(comName, c);
+                    System.out.println(args);
                     return comm.run(args);
                 }
             }
@@ -75,13 +76,15 @@ public class CommController {
 
     private static List<String> getCommandArgs(String cn, String c) {
 
-        int begin = cn.length() + 1;
+        int begin = cn.length();
         int end;
         List<String> args = new ArrayList();
 
         while (begin < c.length()) {
 
             char test = c.charAt(begin);
+
+            System.out.println(test);
 
             if (test != ' ') {
 
@@ -90,10 +93,14 @@ public class CommController {
                 while (end < c.length()) {
 
                     test = c.charAt(end);
+                    System.out.print('-');
+                    System.out.println(test);
 
-                    if (test == ' ') {
+                    if (test == ' ' || end == c.length() - 1) {
 
-                        args.add(c.substring(begin, end));
+                        String a = c.substring(begin, end + (test == ' ' ? 0 : 1));
+                        System.out.println(a);
+                        args.add(a);
                         begin = end;
                         break;
                     }
@@ -118,10 +125,10 @@ public class CommController {
             test = c.charAt(index);
 
             if (test == ' ') {
-                
+
                 break;
             } else {
-                
+
                 index++;
             }
         } while (index < c.length());

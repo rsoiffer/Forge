@@ -36,6 +36,6 @@ public abstract class GUIComponent<G extends GUI> {
     
     public boolean containsClick(Vec2 click){
         
-        return click.containedBy(pos, pos.add(dim));
+        return click.containedBy(pos.add(dim), pos);
     }
 }

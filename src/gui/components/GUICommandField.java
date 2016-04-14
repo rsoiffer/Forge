@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.newdawn.slick.Color;
 import util.Color4;
+import static util.Color4.WHITE;
 import util.Vec2;
 import static util.Vec2.ZERO;
 
@@ -33,7 +34,7 @@ public class GUICommandField extends GUITypingComponent {
 
     public GUICommandField(String n, ComponentInputGUI g, Vec2 p, double d, Color c) {
 
-        super(n, g, p, new Vec2(0, d));
+        super(n, g, p, new Vec2(d, -FONT.getHeight()));
         maxChar = (int) (d / FONT.getWidth(" "));
         color = c;
         buffer = "";
@@ -42,13 +43,17 @@ public class GUICommandField extends GUITypingComponent {
     
     public GUICommandField(String n, ComponentInputGUI g, Vec2 p, double d, Color c, Color4 cc) {
 
-        super(n, g, p, new Vec2(0, d), cc);
+        super(n, g, p, new Vec2(d, -FONT.getHeight()), cc);
         maxChar = (int) (d / FONT.getWidth(" "));
         color = c;
         buffer = "";
         prevComm = new ArrayList();
     }
     
+    public void resetIndex(){
+        
+        prevIndex = 0;
+    }
 
     public Color getColor() {
 
