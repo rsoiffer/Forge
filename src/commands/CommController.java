@@ -63,7 +63,6 @@ public class CommController {
                 if (comm != null) {
 
                     List<String> args = getCommandArgs(comName, c);
-                    System.out.println(args);
                     return comm.run(args);
                 }
             }
@@ -99,7 +98,6 @@ public class CommController {
                     if (test == ' ' || end == c.length() - 1) {
 
                         String a = c.substring(begin, end + (test == ' ' ? 0 : 1));
-                        System.out.println(a);
                         args.add(a);
                         begin = end;
                         break;
