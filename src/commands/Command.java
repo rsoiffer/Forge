@@ -14,19 +14,17 @@ import java.util.List;
 public class Command {
     
     private String code;
-    private String help;
     private CommRun comm;
     
-    public Command(String c, String h, CommRun cr){
+    public Command(String c, CommRun cr){
         
         code = c;
-        help = h;
         comm = cr;
     }
     
     public String run(List<String> args){
         
-        return comm.runCommand(args) ? "Successful" : help;
+        return comm.runCommand(args);
     }
     
     public String getCode(){
@@ -37,15 +35,5 @@ public class Command {
     public void setCode(String c){
         
         code = c;
-    }
-    
-    public String getHelp(){
-        
-        return help;
-    }
-    
-    public void setHelp(String h){
-        
-        help = h;
     }
 }

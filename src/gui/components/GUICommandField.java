@@ -85,12 +85,23 @@ public class GUICommandField extends GUITypingComponent {
         cursor = ZERO;
         gui.recieve(name, s);
         prevComm.add(0, s);
+        resetIndex();
+    }
+    
+    public void setText(String t){
+        
+        buffer = t;
+    }
+    
+    public void addText(String t){
+        
+        buffer = t;
     }
 
     @Override
     public void update() {
 
-        if (isTyping()) {
+        if (selected && isTyping()) {
 
             String b = getTyped();
             clearTyped();
@@ -111,6 +122,17 @@ public class GUICommandField extends GUITypingComponent {
                 typingLimit(maxChar);
             }
         }
+    }
+    
+    @Override
+    public void setSelected(boolean s){
+        
+        if(s){
+            
+            clearTyped();
+        }
+        
+        selected = s;
     }
 
     @Override

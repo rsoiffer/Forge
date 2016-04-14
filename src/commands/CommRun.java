@@ -13,5 +13,5 @@ import java.util.List;
  */
 public interface CommRun {
     
-    public boolean runCommand(List<String> args);
+    public String runCommand(List<String> args);
 }

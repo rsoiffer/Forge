@@ -102,7 +102,7 @@ public class TypingManager extends Signal<Boolean> {
                             comp = (GUIInputComponent) gip;
                         }
                     }
-                    
+
                     compOpen(comp);
                 }
             });
@@ -162,9 +162,9 @@ public class TypingManager extends Signal<Boolean> {
             });
 
             Input.whenKey(Keyboard.KEY_DOWN, true).onEvent(() -> {
-                
+
                 if (comp != null) {
-                    
+
                     if (comp instanceof GUITypingComponent) {
 
                         ((GUITypingComponent) comp).down();
@@ -173,9 +173,9 @@ public class TypingManager extends Signal<Boolean> {
             });
 
             Input.whenKey(Keyboard.KEY_LEFT, true).onEvent(() -> {
-                
+
                 if (comp != null) {
-                    
+
                     if (comp instanceof GUITypingComponent) {
 
                         ((GUITypingComponent) comp).left();
@@ -184,9 +184,9 @@ public class TypingManager extends Signal<Boolean> {
             });
 
             Input.whenKey(Keyboard.KEY_RIGHT, true).onEvent(() -> {
-                
+
                 if (comp != null) {
-                    
+
                     if (comp instanceof GUITypingComponent) {
 
                         ((GUITypingComponent) comp).right();
@@ -211,12 +211,17 @@ public class TypingManager extends Signal<Boolean> {
 
         if (gip != null) {
 
-            if (gip instanceof GUIButtonComponent) {
+            if (gip instanceof GUIInputComponent) {
 
-                gip.send();
-            } else if (gip instanceof GUITypingComponent) {
+                gip.setSelected(true);
 
-                ((GUITypingComponent) gip).DrawCursor(true);
+                if (gip instanceof GUIButtonComponent) {
+
+                    gip.send();
+                } else if (gip instanceof GUITypingComponent) {
+
+                    ((GUITypingComponent) gip).DrawCursor(true);
+                }
             }
         }
     }
@@ -225,9 +230,14 @@ public class TypingManager extends Signal<Boolean> {
 
         if (gip != null) {
 
-            if (gip instanceof GUITypingComponent) {
+            if (gip instanceof GUIInputComponent) {
 
-                ((GUITypingComponent) gip).DrawCursor(false);
+                gip.setSelected(false);
+                
+                if (gip instanceof GUITypingComponent) {
+
+                    ((GUITypingComponent) gip).DrawCursor(false);
+                }
             }
         }
     }
