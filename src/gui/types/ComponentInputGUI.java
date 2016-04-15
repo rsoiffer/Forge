@@ -49,6 +49,17 @@ public abstract class ComponentInputGUI extends GUI{
         return cl;
     }
     
+    @Override
+    public void update(){
+        
+        super.update();
+        
+        for(GUIInputComponent gic : inputs){
+            
+            gic.update();
+        }
+    }
+    
     public abstract void recieve(String name, Object info);
     
     public abstract GUIInputComponent getDefaultComponent();
