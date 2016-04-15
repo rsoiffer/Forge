@@ -103,6 +103,11 @@ public class TypingManager extends Signal<Boolean> {
                         if (gip instanceof GUIInputComponent) {
 
                             comp = (GUIInputComponent) gip;
+                            
+                            if(comp instanceof GUITypingComponent){
+                                
+                                ((GUITypingComponent) comp).setCursorPosRaw(Input.getMouse());
+                            }
                         }
                     }
 

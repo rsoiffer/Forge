@@ -5,6 +5,7 @@
  */
 package gui.types;
 
+import static gui.GUIController.FONT;
 import util.Color4;
 import static util.Color4.BLACK;
 import util.Vec2;
@@ -34,6 +35,25 @@ public abstract class GUITypingComponent extends GUIInputComponent<String> {
         cursor = ZERO;
         drawCur = false;
         curCol = cc;
+    }
+    
+    public void setCursorPosRaw(Vec2 mp){
+        
+        if(containsClick(mp)){
+            
+            cursor = mp.subtract(pos).divide(new Vec2(FONT.getWidth(" "), FONT.getHeight()));
+            cursor = new Vec2(Math.round(cursor.x), Math.round(cursor.y));
+            
+            if(cursor.x < 0){
+                
+                cursor = cursor.withX(0);
+            }
+            
+            if(cursor.y < 0){
+                
+                cursor = cursor.withY(0);
+            }
+        }
     }
 
     public void DrawCursor(boolean dc) {

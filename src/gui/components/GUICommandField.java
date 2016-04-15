@@ -52,7 +52,7 @@ public class GUICommandField extends GUITypingComponent {
     
     public void resetIndex(){
         
-        prevIndex = 0;
+        prevIndex = -1;
     }
 
     public Color getColor() {
@@ -84,16 +84,12 @@ public class GUICommandField extends GUITypingComponent {
         buffer = "";
         cursor = ZERO;
         gui.recieve(name, s);
-        prevComm.add(0, s);
         resetIndex();
+        prevComm.add(0, s);
+        
     }
     
     public void setText(String t){
-        
-        buffer = t;
-    }
-    
-    public void addText(String t){
         
         buffer = t;
     }
@@ -181,7 +177,7 @@ public class GUICommandField extends GUITypingComponent {
 
             if (prevIndex < 0) {
 
-                prevIndex++;
+                prevIndex = 0;
             }
 
             buffer = prevComm.get(prevIndex);
