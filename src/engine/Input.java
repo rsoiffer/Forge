@@ -2,9 +2,7 @@ package engine;
 
 import graphics.Window2D;
 import graphics.Window3D;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -14,8 +12,8 @@ import static util.Vec2.ZERO;
 
 public class Input {
 
-    private static final Map<Integer, Signal<Boolean>> mouseMap = new HashMap();
-    private static final Map<Integer, Signal<Boolean>> keyMap = new HashMap();
+    public static final Map<Integer, Signal<Boolean>> mouseMap = new HashMap();
+    public static final Map<Integer, Signal<Boolean>> keyMap = new HashMap();
 
     public static final Signal<Integer> mouseWheel = new Signal<>(0);
 
@@ -109,22 +107,17 @@ public class Input {
     public static Signal<Double> whileKeyDown(int key) {
         return Core.update.filter(keySignal(key));
     }
-    
+
     @Deprecated
     public static Signal<Double> whileMouseDown(int mouse) {
         return Core.update.filter(mouseSignal(mouse));
     }
-    
+
     public static Signal<Double> whileKey(int key, boolean val) {
         return Core.update.filter(keySignal(key).filter(new Signal(val)));
     }
-    
+
     public static Signal<Double> whileMouse(int mouse, boolean val) {
         return Core.update.filter(mouseSignal(mouse).filter(new Signal(val)));
-    }
-    
-    public static Map<Integer, Signal<Boolean>> getKeyMap(){
-        
-        return keyMap;
     }
 }

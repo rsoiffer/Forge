@@ -27,6 +27,7 @@ import org.lwjgl.input.Mouse;
 public class TypingManager extends Signal<Boolean> {
 
     private static final Map<Integer, Signal<Boolean>> prevStates = new HashMap();
+    private static final Map<Integer, Signal<Boolean>> prevStates2 = new HashMap();
     private static TypingManager typeM;
     static String buffer = "";
     private static ComponentInputGUI input = null;
@@ -81,10 +82,12 @@ public class TypingManager extends Signal<Boolean> {
 
         this.filter(x -> x == true).onEvent(() -> {
 
-            Map<Integer, Signal<Boolean>> in = Input.getKeyMap();
-            prevStates.putAll(in);
-            in.clear();
-            in.putAll(convert);
+            prevStates.putAll(Input.keyMap);
+            Input.keyMap.clear();
+            Input.keyMap.putAll(convert);
+
+            prevStates2.putAll(Input.mouseMap);
+            Input.mouseMap.clear();
 
             Input.whenMouse(0, true).onEvent(() -> {
 
@@ -197,10 +200,13 @@ public class TypingManager extends Signal<Boolean> {
 
         this.filter(x -> x == false).onEvent(() -> {
 
-            Map<Integer, Signal<Boolean>> in = Input.getKeyMap();
-            in.clear();
-            in.putAll(prevStates);
+            Input.keyMap.clear();
+            Input.keyMap.putAll(prevStates);
             prevStates.clear();
+
+            Input.mouseMap.clear();
+            Input.mouseMap.putAll(prevStates2);
+            prevStates2.clear();
         });
 
         comp = input.getDefaultComponent();
@@ -233,7 +239,7 @@ public class TypingManager extends Signal<Boolean> {
             if (gip instanceof GUIInputComponent) {
 
                 gip.setSelected(false);
-                
+
                 if (gip instanceof GUITypingComponent) {
 
                     ((GUITypingComponent) gip).DrawCursor(false);
