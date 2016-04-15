@@ -83,8 +83,6 @@ public class CommController {
 
             char test = c.charAt(begin);
 
-            System.out.println(test);
-
             if (test != ' ') {
 
                 end = begin;
@@ -92,8 +90,6 @@ public class CommController {
                 while (end < c.length()) {
 
                     test = c.charAt(end);
-                    System.out.print('-');
-                    System.out.println(test);
 
                     if (test == ' ' || end == c.length() - 1) {
 
