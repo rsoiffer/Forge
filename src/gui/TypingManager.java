@@ -115,14 +115,6 @@ public class TypingManager extends Signal<Boolean> {
                 }
             });
 
-            Input.whenKey(1, true).onEvent(() -> { //Esc code 1
-
-                input.setVisible(false);
-                Mouse.setGrabbed(true);
-                typeM.set(false);
-                buffer = "";
-            });
-
             Input.whenKey(Keyboard.KEY_RETURN, true).onEvent(() -> {
 
                 if (comp != null) {

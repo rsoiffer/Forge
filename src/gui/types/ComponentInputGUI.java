@@ -60,6 +60,13 @@ public abstract class ComponentInputGUI extends GUI{
         }
     }
     
+    @Override
+    public void draw(){
+        
+        super.draw();
+        inputs.forEach(GUIComponent::draw);
+    }
+    
     public abstract void recieve(String name, Object info);
     
     public abstract GUIInputComponent getDefaultComponent();

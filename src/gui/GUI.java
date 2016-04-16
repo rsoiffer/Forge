@@ -7,6 +7,7 @@ import java.util.Arrays;
 public class GUI {
 
     private boolean visible = false;
+    protected boolean grabbed;
     private final String name;
     protected final ArrayList<GUIComponent> components = new ArrayList();
     
