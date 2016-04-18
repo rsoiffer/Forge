@@ -6,6 +6,7 @@
 package gui.types;
 
 import gui.GUI;
+import static gui.GUIController.FONT;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
