@@ -29,20 +29,20 @@ public class Connection {
             input = new DataInputStream(socket.getInputStream());
             output = new DataOutputStream(socket.getOutputStream());
 
-            new Thread(() -> {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException ex) {
-                }
-                while (!closed) {
-                    try {
-                        byte id = input.readByte();
-                        processMessage(id);
-                    } catch (IOException ex) {
-                        close();
-                    }
-                }
-            }).start();
+//            new Thread(() -> {
+//                try {
+//                    Thread.sleep(500);
+//                } catch (InterruptedException ex) {
+//                }
+//                while (!closed) {
+//                    try {
+//                        byte id = input.readByte();
+//                        processMessage(id);
+//                    } catch (IOException ex) {
+//                        close();
+//                    }
+//                }
+//            }).start();
         } catch (IOException ex) {
             close();
         }
@@ -65,6 +65,19 @@ public class Connection {
 
     public void onClose(Runnable r) {
         onClose.add(r);
+    }
+
+    public void open() {
+        new Thread(() -> {
+            while (!closed) {
+                try {
+                    byte id = input.readByte();
+                    processMessage(id);
+                } catch (IOException ex) {
+                    close();
+                }
+            }
+        }).start();
     }
 
     private void processMessage(byte id) {
