@@ -129,5 +129,10 @@ public class GUIListOutputField extends GUIComponent<GUI> {
 
     @Override
     public void update() {}
+    
+    public void clear(){
+        
+        lines.clear();
+    }
 }
 
