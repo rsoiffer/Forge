@@ -44,4 +44,8 @@ public class GUIController {
         return guis;
     }
 
+    public static GUI getGUI(String n){
+        
+        return guis.get(n);
+    } 
 }
