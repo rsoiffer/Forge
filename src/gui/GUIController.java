@@ -34,18 +34,18 @@ public class GUIController {
         Window3D.resetProjection();
     }
 
+    public static GUI getGUI(String n) {
+
+        return guis.get(n);
+    }
+
     public static void update() {
         guis.values().forEach(g -> {
             g.update();
         });
     }
 
-    public static Map<String, GUI> getGUIList() {
+    public static Map<String, GUI> getGUIMap() {
         return guis;
     }
-
-    public static GUI getGUI(String n){
-        
-        return guis.get(n);
-    } 
 }
