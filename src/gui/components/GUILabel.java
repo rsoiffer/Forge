@@ -9,7 +9,6 @@ import graphics.Graphics2D;
 import static gui.GUIController.FONT;
 import gui.types.GUIComponent;
 import org.newdawn.slick.Color;
-import util.Color4;
 import util.Vec2;
 
 /**
@@ -20,12 +19,24 @@ public class GUILabel extends GUIComponent{
 
     private Color color;
     private String text;
+    private Vec2 mid;
+    private boolean cent;
     
     public GUILabel(String n, Vec2 p, String t, Color c){
         
         super(n, null, p, Vec2.ZERO);
         color = c;
         text = t;
+        cent = false;
+    }
+    
+    public GUILabel(String n, Vec2 p, Vec2 d, String t, Color c){
+        
+        super(n, null, p, d);
+        color = c;
+        text = t;
+        cent = true;
+        mid = findMid(t, d);
     }
 
     public Color getColor() {
@@ -41,6 +52,11 @@ public class GUILabel extends GUIComponent{
     public void setLabel(String l){
         
         text = l;
+        
+        if(cent){
+            
+            mid = findMid(l, dim);
+        }
     }
     
     public String getLabel(){
@@ -51,7 +67,7 @@ public class GUILabel extends GUIComponent{
     @Override
     public void draw() {
 
-        Graphics2D.drawText(text, "Console", pos.add(new Vec2(0, FONT.getHeight())), color);
+        Graphics2D.drawText(text, "Console", pos.add(new Vec2(0, FONT.getHeight())).add(cent ? mid : Vec2.ZERO), color);
     }
 
     @Override
