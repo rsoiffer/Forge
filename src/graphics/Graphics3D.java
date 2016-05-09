@@ -11,6 +11,20 @@ import util.Vec3;
 
 public abstract class Graphics3D {
 
+    public static void drawCube(Vec3 pos, double size, Color4 color) {
+        drawRect(pos, new Vec2(size), 0, 0, color);
+
+        drawRect(pos.add(new Vec3(0, 0, size)), new Vec2(size), 0, 0, color);
+
+        drawRect(pos, new Vec2(size), Math.PI / 2, Math.PI / 2, color);
+
+        drawRect(pos.add(new Vec3(size, 0, 0)), new Vec2(size), Math.PI / 2, Math.PI / 2, color);
+
+        drawRect(pos, new Vec2(size), Math.PI / 2, 0, color);
+
+        drawRect(pos.add(new Vec3(0, size, 0)), new Vec2(size), Math.PI / 2, 0, color);
+    }
+
     public static void drawLine(Vec3 start, Vec3 end) {
         drawLine(start, end, Color4.BLACK);
     }

@@ -1,4 +1,3 @@
-
 package util;
 
 import java.nio.FloatBuffer;
@@ -22,6 +21,10 @@ public class Vec3 {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    public Vec3(double[] coords) {
+        this(coords[0], coords[1], coords[2]);
     }
 
     public Vec3 add(Vec3 other) {
@@ -206,6 +209,10 @@ public class Vec3 {
 
     public Vec3 subtract(Vec3 other) {
         return new Vec3(x - other.x, y - other.y, z - other.z);
+    }
+
+    public double[] toArray() {
+        return new double[]{x, y, z};
     }
 
     public FloatBuffer toFloatBuffer() {
