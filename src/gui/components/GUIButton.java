@@ -4,6 +4,7 @@ import graphics.Graphics2D;
 import static gui.GUIController.FONT;
 import gui.types.ComponentInputGUI;
 import gui.types.GUIButtonComponent;
+import gui.types.GUIComponent;
 import org.newdawn.slick.Color;
 import util.Vec2;
 
@@ -29,14 +30,6 @@ public class GUIButton extends GUIButtonComponent {
         super(n, g, p, d, l, false);
         color = c;
         toggle = t;
-    }
-    
-    private static Vec2 findMid(String t, Vec2 d){
-        
-        int tl = t.length();
-        double h = FONT.getHeight() / 2.0;
-        double w = (FONT.getWidth(" ") * tl) / 2.0;
-        return d.divide(2).subtract(new Vec2(w, h)); 
     }
     
     @Override
