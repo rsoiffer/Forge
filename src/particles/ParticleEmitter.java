@@ -10,12 +10,26 @@ import java.util.function.Consumer;
 
 public class ParticleEmitter<P extends Particle> extends AbstractEntity {
 
+    /**
+     * A collection particles the emitter will emit
+     */
     public final Collection<P> particles = new LinkedList();
-
+    /**
+     * Draws the particles
+     */
     public Drawer<P> drawer;
+    /**
+     * A list with two parameters, will do what mutate the list on update
+     */
     public List<BiConsumer<Double, P>> onUpdate = new LinkedList();
+    /**
+     * A list with one parameter, will mutate the list on removal
+     */
     public List<Consumer<P>> onRemove = new LinkedList();
 
+    /**
+     *
+     */
     @Override
     public void create() {
         onUpdate(dt -> {
