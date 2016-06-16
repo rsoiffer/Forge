@@ -6,6 +6,9 @@ import util.Vec2;
 
 public class TraceParticle extends Particle {
 
+    /**
+     * List of the past positions the tracer particle has been
+     */
     public List<Vec2> pastPositions = new LinkedList();
     public int store;
 
@@ -14,6 +17,9 @@ public class TraceParticle extends Particle {
         this.store = store;
     }
 
+    /**
+     *
+     */
     @Override
     public void render() {
         pastPositions.add(pos);

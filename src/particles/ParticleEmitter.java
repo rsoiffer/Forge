@@ -8,6 +8,12 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+/**
+ * Takes any kind of particle and generates it until the particle should no
+ * longer exist
+ *
+ * @param <P>
+ */
 public class ParticleEmitter<P extends Particle> extends AbstractEntity {
 
     /**
@@ -28,6 +34,8 @@ public class ParticleEmitter<P extends Particle> extends AbstractEntity {
     public List<Consumer<P>> onRemove = new LinkedList();
 
     /**
+     * Creates particles and updates them until they should be removed. Also
+     * renders the particles
      *
      */
     @Override
@@ -53,6 +61,11 @@ public class ParticleEmitter<P extends Particle> extends AbstractEntity {
         });
     }
 
+    /**
+     * Interface for drawer
+     *
+     * @param <P>
+     */
     public static interface Drawer<P extends Particle> {
 
         public abstract void begin();
