@@ -36,7 +36,6 @@ public class ParticleEmitter<P extends Particle> extends AbstractEntity {
     /**
      * Creates particles and updates them until they should be removed. Also
      * renders the particles
-     *
      */
     @Override
     public void create() {
