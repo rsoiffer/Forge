@@ -7,7 +7,7 @@ public abstract class Destructible {
 
     private static long maxID = 0;
     private final long id = maxID++;
-    private boolean destroying;
+    private boolean destroyed;
 
     final Set<Destructible> parents = new HashSet();
     final Set<Destructible> children = new HashSet();
@@ -53,15 +53,18 @@ public abstract class Destructible {
      * parents as well.
      */
     public void destroy() {
-        if (!destroying) {
-            destroying = true;
+        if (!destroyed) {
+            destroyed = true;
             children.forEach(d -> d.parents.remove(this));
             children.forEach(Destructible::destroy);
             children.clear();
             parents.forEach(p -> p.removeChild(this));
             parents.clear();
-            destroying = false;
         }
+    }
+
+    public boolean isDestroyed() {
+        return destroyed;
     }
 
     /**

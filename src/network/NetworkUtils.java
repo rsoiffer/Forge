@@ -17,7 +17,7 @@ import util.Vec3;
 public abstract class NetworkUtils {
 
     //Starting and connecting to servers
-    public static final int PORT = 51234;
+    public static final int PORT = 51243;
 
     public static Connection connect(String ip) {
         if (ip.equals("")) {
