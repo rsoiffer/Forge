@@ -10,12 +10,23 @@ import util.Vec2;
 
 public class Explosion extends ParticleEmitter<LifeTimeParticle> {
 
+    /**
+     * Position of the explosion, X and Y values
+     */
     public Vec2 position;
 
+    /**
+     * constructor of the Explosion object, sets the position of the object
+     *
+     * @param position
+     */
     public Explosion(Vec2 position) {
         this.position = position;
     }
 
+    /**
+     *
+     */
     @Override
     public void create() {
         super.create();

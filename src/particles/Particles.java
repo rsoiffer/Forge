@@ -16,6 +16,7 @@ import util.Mutable;
 import util.Util;
 import util.Vec2;
 
+//This is only for testing the particles package
 public class Particles {
 
     public static void main(String[] args) {
