@@ -1,5 +1,6 @@
 package gui;
 
+import static engine.Core.is3D;
 import graphics.Window3D;
 import graphics.data.GLFont;
 import graphics.loading.FontContainer;
@@ -25,13 +26,20 @@ public class GUIController {
     }
 
     public static void draw() {
-        Window3D.guiProjection();
+        
+        if (is3D) {
+            Window3D.guiProjection();
+        }
+        
         guis.values().forEach(g -> {
             if (g.isVisible()) {
                 g.draw();
             }
         });
-        Window3D.resetProjection();
+
+        if (is3D) {
+            Window3D.resetProjection();
+        }
     }
 
     public static GUI getGUI(String n) {
