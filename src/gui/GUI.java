@@ -16,6 +16,12 @@ public class GUI {
         name = n;
     }
     
+    public GUI(String n, GUIComponent ... gip){
+        
+        name = n;
+        components.addAll(Arrays.asList(gip));
+    }
+    
     public String getName(){
         
         return name;
