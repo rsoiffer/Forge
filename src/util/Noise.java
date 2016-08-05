@@ -23,6 +23,14 @@ public class Noise {
         }
         return r;
     }
+    
+    public double multiBetterOffset(double x, double y, int octaves, double frequency) {
+        double r = 0;
+        for (int i = 0; i < octaves; i++) {
+            r += perlinBetterOffset(x * Math.pow(2, i) * frequency, y * Math.pow(2, i) * frequency) / Math.pow(2, i);
+        }
+        return r;
+    }
 
     public double offset(double x, double y, int octaves, double frequency, double offset) {
         double r = 0;
