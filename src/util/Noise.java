@@ -23,6 +23,14 @@ public class Noise {
         }
         return r;
     }
+    
+    public double multiBetterOffset(double x, double y, int octaves, double frequency) {
+        double r = 0;
+        for (int i = 0; i < octaves; i++) {
+            r += perlinBetterOffset(x * Math.pow(2, i) * frequency, y * Math.pow(2, i) * frequency) / Math.pow(2, i);
+        }
+        return r;
+    }
 
     public double offset(double x, double y, int octaves, double frequency, double offset) {
         double r = 0;
@@ -35,7 +43,11 @@ public class Noise {
     public double perlin(double x, double y) {
         return SimplexNoise.noise(x, y, seed);
     }
-
+    
+    public double perlinBetterOffset(double x, double y){
+        return SimplexNoise.noise(x+100000*seed, y+100000*seed, 10000*seed);
+    }
+    
     public double random(double x, double y) {
         return multi(x, y, 1, 1000000);
     }
