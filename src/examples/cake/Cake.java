@@ -28,7 +28,7 @@ public class Cake {
         });
 
         Input.whenMouse(0, true).onEvent(() -> {
-            int sec = (int) ((Input.getMouse().direction() - spin.get()) / Math.PI * 4 + 8) % 8;
+            int sec = (int) ((Input.getMouse().direction() - spin.get()) / Math.PI * 4 + 80000) % 8;
             hideCake[sec] = !hideCake[sec];
         });
 
